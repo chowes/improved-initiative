@@ -43,18 +43,27 @@ public class CombatAdapter extends RecyclerView.Adapter<CombatAdapter.CombatAdap
 
     class CombatAdapterViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
 
-        TextView listItemCharacterView;
+        TextView characterName;
+        TextView characterHitPoints;
+        TextView characterConditions;
+        TextView characterInitiative;
 
         public CombatAdapterViewHolder(View itemView) {
             super(itemView);
 
-            listItemCharacterView = (TextView) itemView.findViewById(R.id.tv_character_item);
+            characterName = (TextView) itemView.findViewById(R.id.tv_character_name);
+            characterHitPoints = (TextView) itemView.findViewById(R.id.tv_hit_points);
+            characterConditions = (TextView) itemView.findViewById(R.id.tv_conditions);
+            characterInitiative = (TextView) itemView.findViewById(R.id.tv_init);
         }
 
         private void bind(int index) {
-            listItemCharacterView.setText(String.valueOf(index));
+            characterName.setText(R.string.test_name);
+            characterHitPoints.setText("HP: " + index + "/" + index);
+            characterConditions.setText("Condition:\n" + "Normal");
+            characterInitiative.setText("Init: " + 12);
+            
         }
-
 
         @Override
         public void onClick(View v) {

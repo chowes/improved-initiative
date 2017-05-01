@@ -23,9 +23,5 @@ public class CombatActivity extends AppCompatActivity {
 
         combatAdapter = new CombatAdapter(100);
         combatRecyclerView.setAdapter(combatAdapter);
-
-
-
-
     }
 }
