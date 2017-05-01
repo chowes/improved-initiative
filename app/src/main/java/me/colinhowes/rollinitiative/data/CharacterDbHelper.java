@@ -10,8 +10,8 @@ import android.database.sqlite.SQLiteOpenHelper;
 
 public class CharacterDbHelper extends SQLiteOpenHelper {
 
-    public static final String DATABASE_NAME = "character.db";
-    private static int DATABASE_VERSION = 1;
+    private static final String DATABASE_NAME = "character.db";
+    private static final int DATABASE_VERSION = 1;
 
     public CharacterDbHelper(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
@@ -19,11 +19,26 @@ public class CharacterDbHelper extends SQLiteOpenHelper {
 
     @Override
     public void onCreate(SQLiteDatabase db) {
+        final String SQL_CREATE_TABLE_STATEMENT = "CREATE TABLE " +
+                CharacterContract.CharacterEntry.TABLE_NAME + " (" +
+                CharacterContract.CharacterEntry._ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
+                CharacterContract.CharacterEntry.COLUMN_NAME_NAME + " TEXT NOT NULL, " +
+                CharacterContract.CharacterEntry.COLUMN_NAME_COLOUR + " TEXT NOT NULL, " +
+                CharacterContract.CharacterEntry.COLUMN_NAME_HP_CURRENT + " INTEGER NOT NULL, " +
+                CharacterContract.CharacterEntry.COLUMN_NAME_HP_TOTAL + " INTEGER NOT NULL, " +
+                CharacterContract.CharacterEntry.COLUMN_NAME_CONDITION + " STRING NOT NULL, " +
+                CharacterContract.CharacterEntry.COLUMN_NAME_INIT_BONUS + " INTEGER NOT NULL, " +
+                CharacterContract.CharacterEntry.COLUMN_NAME_INIT + " INTEGER NOT NULL, " +
+                CharacterContract.CharacterEntry.COLUMN_NAME_IN_COMBAT + " INTEGER NOT NULL" +
+                ");";
 
+        db.execSQL(SQL_CREATE_TABLE_STATEMENT);
     }
 
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-
+        final String SQL_DROP_TABLE_STATEMENT = "DROP TABLE IF EXISTS " +
+                CharacterContract.CharacterEntry.TABLE_NAME;
+        db.execSQL(SQL_DROP_TABLE_STATEMENT);
     }
 }
