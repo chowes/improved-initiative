@@ -6,4 +6,113 @@
     android:layout_height="match_parent"
     tools:context="me.colinhowes.rollinitiative.EditActivity">
 
+    <LinearLayout
+        android:id="@+id/ll_name_layout"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="16dp"
+        android:layout_marginRight="16dp"
+        android:orientation="horizontal"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <TextView
+            android:id="@+id/tv_name_label"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:text="@string/edit_name"
+            android:textSize="24sp"/>
+
+        <EditText
+            android:id="@+id/et_name_input"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:layout_marginLeft="4dp"
+            android:layout_marginStart="4dp"
+            android:inputType="text"
+            android:textSize="24sp"/>
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/ll_hp_layout"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="16dp"
+        android:layout_marginRight="16dp"
+        android:orientation="horizontal"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/ll_name_layout">
+
+        <TextView
+            android:id="@+id/tv_hp_label"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:text="@string/edit_hp_max"
+            android:textSize="24sp"/>
+
+        <EditText
+            android:id="@+id/et_max_hp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="end"
+            android:layout_marginLeft="4dp"
+            android:layout_marginStart="4dp"
+            android:inputType="number"
+            android:textSize="24sp"
+            android:textAlignment="textEnd"/>
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/ll_init_layout"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="16dp"
+        android:layout_marginRight="16dp"
+        android:orientation="horizontal"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/ll_hp_layout">
+
+        <TextView
+            android:id="@+id/tv_init_label"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:text="@string/edit_init_bonus"
+            android:textSize="24sp"/>
+
+        <EditText
+            android:id="@+id/et_init_bonus"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="end"
+            android:layout_marginLeft="4dp"
+            android:layout_marginStart="4dp"
+            android:inputType="number"
+            android:textSize="24sp"
+            android:textAlignment="textEnd"/>
+    </LinearLayout>
+
+    <Button
+        android:id="@+id/btn_save_character"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:gravity="center_horizontal"
+        android:text="@string/create_character"
+        android:textSize="24sp"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        android:background="@color/colorPrimaryDark"
+        android:layout_marginLeft="16dp"
+        android:padding="24dp"
+        android:layout_marginRight="16dp"
+        android:layout_marginBottom="16dp"
+        android:textColor="@color/colorPrimaryLight"
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="16dp"
+        android:onClick="saveButton"/>
+
 </android.support.constraint.ConstraintLayout>

@@ -1,5 +1,6 @@
 package me.colinhowes.rollinitiative.data;
 
+import android.content.ContentValues;
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
@@ -40,5 +41,19 @@ public class CharacterDbHelper extends SQLiteOpenHelper {
         final String SQL_DROP_TABLE_STATEMENT = "DROP TABLE IF EXISTS " +
                 CharacterContract.CharacterEntry.TABLE_NAME;
         db.execSQL(SQL_DROP_TABLE_STATEMENT);
+    }
+
+    public void insertCharacter(SQLiteDatabase db, CharacterType character) {
+        ContentValues values = new ContentValues();
+        values.put(CharacterContract.CharacterEntry.COLUMN_NAME_NAME, character.name);
+        values.put(CharacterContract.CharacterEntry.COLUMN_NAME_COLOUR, character.colour);
+        values.put(CharacterContract.CharacterEntry.COLUMN_NAME_CONDITION, character.condition);
+        values.put(CharacterContract.CharacterEntry.COLUMN_NAME_HP_CURRENT, character.hpCurrent);
+        values.put(CharacterContract.CharacterEntry.COLUMN_NAME_HP_TOTAL, character.hpMax);
+        values.put(CharacterContract.CharacterEntry.COLUMN_NAME_INIT_BONUS, character.initBonus);
+        values.put(CharacterContract.CharacterEntry.COLUMN_NAME_INIT, character.init);
+        values.put(CharacterContract.CharacterEntry.COLUMN_NAME_IN_COMBAT, character.inCombat);
+
+        db.insert(CharacterContract.CharacterEntry.TABLE_NAME, null, values);
     }
 }

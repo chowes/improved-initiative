@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:title="@string/add_character"
+        android:icon="@drawable/ic_add_circle_outline_black_48dp"
+        android:onClick="startAddCharacter"/>
+    <item
+        android:title="@string/replay_round"
+        android:icon="@drawable/ic_replay_black_48dp"
+        android:onClick="replayLastRound"/>.
+    <item
+        android:title="@string/next_round"
+        android:icon="@drawable/ic_play_circle_outline_black_48dp"
+        android:onClick="startNextRound"/>
+</menu>

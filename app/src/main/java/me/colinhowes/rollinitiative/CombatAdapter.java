@@ -3,11 +3,13 @@ package me.colinhowes.rollinitiative;
 import android.content.Context;
 import android.database.Cursor;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import me.colinhowes.rollinitiative.data.CharacterContract;
 
@@ -17,12 +19,18 @@ import me.colinhowes.rollinitiative.data.CharacterContract;
 
 public class CombatAdapter extends RecyclerView.Adapter<CombatAdapter.CombatAdapterViewHolder> {
 
+    final private CharacterClickListener clickListener;
     private Cursor characterCursor;
     private Context context;
 
-    public CombatAdapter(Context context, Cursor cursor) {
+    public CombatAdapter(Context context, Cursor cursor, CharacterClickListener listener) {
         this.characterCursor = cursor;
+        this.clickListener = listener;
         this.context = context;
+    }
+
+    public interface CharacterClickListener {
+        void onCharacterClick(int indexClicked);
     }
 
     @Override
@@ -42,6 +50,8 @@ public class CombatAdapter extends RecyclerView.Adapter<CombatAdapter.CombatAdap
         if (!characterCursor.moveToPosition(position)) {
             return;
         }
+        int characterId = characterCursor.getInt(
+                characterCursor.getColumnIndex(CharacterContract.CharacterEntry._ID));
         String characterName = characterCursor.getString(
                 characterCursor.getColumnIndex(CharacterContract.CharacterEntry.COLUMN_NAME_NAME));
         String characterConditions = characterCursor.getString(
@@ -55,6 +65,8 @@ public class CombatAdapter extends RecyclerView.Adapter<CombatAdapter.CombatAdap
         String characterColour = characterCursor.getString(
                 characterCursor.getColumnIndex(CharacterContract.CharacterEntry.COLUMN_NAME_COLOUR));
 
+        // TODO: Should be using string resources here, fix this.
+        holder.itemView.setTag(characterId);
         holder.characterName.setText(characterName);
         holder.characterHitPoints.setText("HP: " + characterHitPointCurrent + "/" + characterHitPointTotal);
         holder.characterConditions.setText("Condition:\n" + characterConditions);
@@ -103,11 +115,14 @@ public class CombatAdapter extends RecyclerView.Adapter<CombatAdapter.CombatAdap
             characterConditions = (TextView) itemView.findViewById(R.id.tv_conditions);
             characterInitiative = (TextView) itemView.findViewById(R.id.tv_init);
             characterColour = (ImageView) itemView.findViewById(R.id.iv_character_colour);
+
+            itemView.setOnClickListener(this);
         }
 
         @Override
         public void onClick(View v) {
-
+            int clickedPosition = getAdapterPosition();
+            clickListener.onCharacterClick(clickedPosition);
         }
     }
 
