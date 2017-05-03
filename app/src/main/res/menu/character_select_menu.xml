@@ -3,8 +3,7 @@
     <item
         android:title="@string/roll_initative"
         android:icon="@drawable/ic_casino_black_48dp"
-        android:orderInCategory="1"
-        android:onClick="rollInitiative"/>
+        android:orderInCategory="1" />
     <item
         android:title="@string/create_character"
         android:icon="@drawable/ic_add_circle_outline_black_48dp"

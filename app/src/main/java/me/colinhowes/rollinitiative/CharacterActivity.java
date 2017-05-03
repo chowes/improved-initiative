@@ -54,7 +54,14 @@ public class CharacterActivity extends AppCompatActivity
         characterAdapter = new CharacterAdapter(this, characterCursor, this);
         characterRecyclerView.setAdapter(characterAdapter);
 
+        /*
+         * Here is where we handle swipe events
+         * Swipe left - delete character
+         * Swipe right - edit character
+         */
         new ItemTouchHelper(new ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.LEFT | ItemTouchHelper.RIGHT) {
+
+            // we aren't using onMove here
             @Override
             public boolean onMove(RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder, RecyclerView.ViewHolder target) {
                 return false;
@@ -64,19 +71,20 @@ public class CharacterActivity extends AppCompatActivity
             @Override
             public void onSwiped(RecyclerView.ViewHolder viewHolder, int swipeDir) {
 
-                int id = (int) viewHolder.itemView.getTag();
+                // passed to database update functions
+                int characterId = (int) viewHolder.itemView.getTag();
 
                 if (swipeDir == ItemTouchHelper.LEFT) {
-                    // delete
+                    deleteCharacter(characterId);
                 } else {
-                    toggleInCombat(id);
+                    editCharacter(characterId);
                 }
 
             }
         }).attachToRecyclerView(characterRecyclerView);
-
     }
 
+    // get all the characters in the database
     private Cursor getCharacters() {
         return db.query(
                 CharacterContract.CharacterEntry.TABLE_NAME,
@@ -88,12 +96,14 @@ public class CharacterActivity extends AppCompatActivity
                 CharacterContract.CharacterEntry.COLUMN_NAME_NAME);
     }
 
+    // toggles whether a character is in combat
     private void toggleInCombat(int characterId) {
         ContentValues values = new ContentValues();
         String selection = CharacterContract.CharacterEntry._ID + " = ?";
         String[] selectionArgs = { String.valueOf(characterId) };
         int inCombat;
 
+        // get the character matching characterId
         Cursor cursor = db.query(
             CharacterContract.CharacterEntry.TABLE_NAME,
             null,
@@ -103,45 +113,105 @@ public class CharacterActivity extends AppCompatActivity
             null,
             null);
 
+        // there should be exactly one row in the cursor
         if (!cursor.moveToFirst()) {
-            Log.e("TAG", "Here!");
+            Log.e("toggleInCombat", "Database query returned no characters with ID!");
             return;
         }
+
         inCombat = cursor.getInt(cursor.getColumnIndex(
                 CharacterContract.CharacterEntry.COLUMN_NAME_IN_COMBAT));
         cursor.close();
 
+        // toggle inCombat
         inCombat = (inCombat == 1) ? 0 : 1;
 
         values.put(CharacterContract.CharacterEntry.COLUMN_NAME_IN_COMBAT,
                 String.valueOf(inCombat));
 
+        // update character with new inCombat value
         db.update(
             CharacterContract.CharacterEntry.TABLE_NAME,
             values,
             selection,
             selectionArgs);
 
+        // we have to force the loader to fetch the data again
         getSupportLoaderManager().restartLoader(0, null, this);
     }
 
+    // toggles whether a character is in combat
+    private void updateHealth(int characterId, boolean increase) {
+        ContentValues values = new ContentValues();
+        String selection = CharacterContract.CharacterEntry._ID + " = ?";
+        String[] selectionArgs = { String.valueOf(characterId) };
+        int currentHealth;
+
+        // get the character matching characterId
+        Cursor cursor = db.query(
+                CharacterContract.CharacterEntry.TABLE_NAME,
+                null,
+                selection,
+                selectionArgs,
+                null,
+                null,
+                null);
+
+        // there should be exactly one row in the cursor
+        if (!cursor.moveToFirst()) {
+            Log.e("updateHealth", "Database query returned no characters with ID!");
+            return;
+        }
+
+        currentHealth = cursor.getInt(cursor.getColumnIndex(
+                CharacterContract.CharacterEntry.COLUMN_NAME_HP_CURRENT));
+        cursor.close();
+
+        // increase or decrease health
+        if (increase == true) {
+            currentHealth += 1;
+        } else {
+            currentHealth -= 1;
+        }
+
+        values.put(CharacterContract.CharacterEntry.COLUMN_NAME_HP_CURRENT,
+                String.valueOf(currentHealth));
+
+        // update character with new inCombat value
+        db.update(
+                CharacterContract.CharacterEntry.TABLE_NAME,
+                values,
+                selection,
+                selectionArgs);
+
+        // we have to force the loader to fetch the data again
+        getSupportLoaderManager().restartLoader(0, null, this);
+    }
+
+    private void deleteCharacter(int characterId) {
+        String selection = CharacterContract.CharacterEntry._ID + " = ?";
+        String[] selectionArgs = { String.valueOf(characterId) };
+
+        db.delete(CharacterContract.CharacterEntry.TABLE_NAME, selection, selectionArgs);
+
+        // we have to force the loader to fetch the data again
+        getSupportLoaderManager().restartLoader(0, null, this);
+    }
+
+    private void editCharacter(int characterId) {
+        Toast.makeText(this, "Edit Character " + characterId, Toast.LENGTH_SHORT).show();
+        getSupportLoaderManager().restartLoader(0, null, this);
+    }
+
+    /*
+     * Launch the character creation activity
+     */
     public void createCharacter(MenuItem menuItem) {
         Context context = this;
         Class destinationActivity = EditActivity.class;
 
         Intent intent = new Intent(context, destinationActivity);
         startActivity(intent);
-    }
-
-    public int rollInitiative(MenuItem menuItem) {
-        int initBonus = 0;
-        int initRoll;
-
-        Random initRandom = new Random();
-        initRoll = initRandom.nextInt(20) + 1;
-        initRoll += initBonus;
-
-        return initRoll;
     }
 
     @Override
@@ -151,6 +221,9 @@ public class CharacterActivity extends AppCompatActivity
         getSupportLoaderManager().restartLoader(0, null, this);
     }
 
+    /*
+     * Get the character data asynchronously
+     */
     @Override
     public Loader<Cursor> onCreateLoader(int id, Bundle args) {
         return new AsyncTaskLoader<Cursor>(this) {
@@ -188,18 +261,40 @@ public class CharacterActivity extends AppCompatActivity
         };
     }
 
+    /*
+     * After the load finishes we need to set the new cursor in the CharacterAdapter
+     * Note that changeCursor closes the old cursor
+     */
     @Override
     public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
         characterAdapter.changeCursor(data);
     }
 
+    /*
+     * Invalidate old cursor
+     */
     @Override
     public void onLoaderReset(Loader<Cursor> loader) {
         characterAdapter.changeCursor(null);
     }
 
+    /*
+     * Handles click events - dispatch to toggleInCombat
+     */
     @Override
-    public void onCharacterClick(int characterId) {
-        toggleInCombat(characterId);
+    public void onCharacterClick(int characterId, EventType eventType) {
+        switch (eventType) {
+            case INCREASE_HEALTH:
+                updateHealth(characterId, true);
+                break;
+            case DECREASE_HEALTH:
+                updateHealth(characterId, false);
+                break;
+            case ITEM_CLICK:
+                toggleInCombat(characterId);
+                break;
+            default:
+                return;
+        }
     }
 }
