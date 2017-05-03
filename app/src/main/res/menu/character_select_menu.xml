@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:title="@string/roll_initative"
+        android:icon="@drawable/ic_casino_black_48dp"
+        android:orderInCategory="1"
+        android:onClick="rollInitiative"/>
+    <item
+        android:title="@string/create_character"
+        android:icon="@drawable/ic_add_circle_outline_black_48dp"
+        android:orderInCategory="2"
+        android:onClick="createCharacter"/>
+</menu>

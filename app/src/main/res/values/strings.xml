@@ -1,5 +1,8 @@
 <resources>
     <string name="app_name">Improved Initiative</string>
+    <string name="combat_name">Improved Initiative</string>
+    <string name="edit_character_name">Create a new Character</string>
+    <string name="choose_character_name">Select Characters</string>
 
     <!--Main Screen-->
     <string name="start_combat">Start Combat</string>
@@ -16,14 +19,24 @@
     <string name="edit_title">Edit Character</string>
     <string name="create_character">Create Character</string>
     <string name="edit_name">Name:</string>
-    <string name="edit_hp_max">Max HP:</string>
-    <string name="edit_current_hp">Current HP:</string>
+    <string name="edit_hp">HP:</string>
+    <string name="edit_hp_max">Max</string>
+    <string name="edit_hp_current">Current</string>
     <string name="edit_colour">Colour: </string>
-    <string name="edit_init_bonus">Initiative Bonus:</string>
+    <string name="edit_init_bonus">Bonus:</string>
     <string name="edit_initiative">Initiative:</string>
     <string name="edit_conditions">Condition:</string>
     <string name="edit_in_combat">In Combat:</string>
     <string name="slash">/</string>
+    <string name="roll_initative">Roll Initiative</string>
+
+    <string-array name="color_array">
+        <item>Red</item>
+        <item>Blue</item>
+        <item>Green</item>
+        <item>Yellow</item>
+        <item>Black</item>
+    </string-array>
 
     <!--Testing-->
     <string name="test_name">Beatrix the Bold</string>

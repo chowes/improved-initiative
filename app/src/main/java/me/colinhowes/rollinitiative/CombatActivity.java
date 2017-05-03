@@ -48,8 +48,8 @@ public class CombatActivity extends AppCompatActivity implements CombatAdapter.C
         return combatDb.query(
                 CharacterContract.CharacterEntry.TABLE_NAME,
                 null,
-                null,
-                null,
+                "in_combat=?",
+                new String[]{"1"},
                 null,
                 null,
                 CharacterContract.CharacterEntry.COLUMN_NAME_INIT + " DESC");
@@ -63,7 +63,7 @@ public class CombatActivity extends AppCompatActivity implements CombatAdapter.C
     public void startAddCharacter(MenuItem item) {
         Context context = this;
         Class destinationActivity;
-        destinationActivity = EditActivity.class;
+        destinationActivity = CharacterActivity.class;
 
         Intent intent = new Intent(context, destinationActivity);
         startActivity(intent);

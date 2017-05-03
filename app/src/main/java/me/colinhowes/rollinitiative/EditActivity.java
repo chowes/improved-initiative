@@ -6,10 +6,16 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.view.MenuItem;
 import android.view.View;
+import android.widget.ArrayAdapter;
+import android.widget.CheckBox;
 import android.widget.EditText;
+import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import java.util.Random;
 
 import me.colinhowes.rollinitiative.data.CharacterDbHelper;
 import me.colinhowes.rollinitiative.data.CharacterType;
@@ -21,8 +27,12 @@ public class EditActivity extends AppCompatActivity {
     CharacterDbHelper dbHelper;
 
     EditText nameField;
+    EditText hpCurrentField;
     EditText hpMaxField;
     EditText initBonusField;
+    EditText initField;
+    CheckBox inCombatCheckBox;
+    Spinner colorSpinner;
 
 
     @Override
@@ -34,45 +44,42 @@ public class EditActivity extends AppCompatActivity {
             this.getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         }
 
-        nameField = (EditText) findViewById(R.id.et_name_input);
-        hpMaxField = (EditText) findViewById(R.id.et_max_hp);
+        colorSpinner = (Spinner) findViewById(R.id.spinner_color);
+        ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this,
+            R.array.color_array, R.layout.spinner_item);
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        colorSpinner.setAdapter(adapter);
+
+        nameField = (EditText) findViewById(R.id.et_name);
+        hpCurrentField = (EditText) findViewById(R.id.et_hp_current);
+        hpMaxField = (EditText) findViewById(R.id.et_hp_max);
         initBonusField = (EditText) findViewById(R.id.et_init_bonus);
+        initField = (EditText) findViewById(R.id.et_init);
+        inCombatCheckBox = (CheckBox) findViewById(R.id.cb_in_combat);
 
         dbHelper = new CharacterDbHelper(this);
         characterDb = dbHelper.getWritableDatabase();
     }
 
-    public void saveButton(View view) {
-        Context context = this;
-        Class destinationActivity;
-
-        int id = view.getId();
-
-        switch (id) {
-            case R.id.btn_save_character:
-                saveCharacter();
-                destinationActivity = CombatActivity.class;
-                break;
-            default:
-                return;
-        }
-
-        Intent intent = new Intent(context, destinationActivity);
-        startActivity(intent);
-    }
-
-    private void saveCharacter() {
+    public void saveCharacter(MenuItem menuItem) {
         String name = nameField.getText().toString();
-        String colour = "blue";
-        String condition = "Normal";
+        String colour = colorSpinner.getSelectedItem().toString().toLowerCase();
+        String condition = "normal";
+        int inCombat = inCombatCheckBox.isChecked() ? 1 : 0;
         int hpCurrent;
         int hpMax;
         int initBonus;
-        int init = 0;
-        int inCombat = 0;
+        int init;
 
+        // try to get character data from fields, on error we just assign a default
         if (name.isEmpty()) {
-            name = "NoName";
+            name = "John Doe";
+        }
+
+        try {
+            hpCurrent = Integer.parseInt(hpCurrentField.getText().toString());
+        } catch (NumberFormatException e) {
+            hpCurrent = 0;
         }
 
         try {
@@ -80,7 +87,6 @@ public class EditActivity extends AppCompatActivity {
         } catch (NumberFormatException e) {
             hpMax = 0;
         }
-        hpCurrent = hpMax;
 
         try {
             initBonus = Integer.parseInt(initBonusField.getText().toString());
@@ -88,7 +94,38 @@ public class EditActivity extends AppCompatActivity {
             initBonus = 0;
         }
 
+        try {
+            init = Integer.parseInt(initBonusField.getText().toString());
+        } catch (NumberFormatException e) {
+            init = 0;
+        }
+
+        // create a new character and add it to the database
         CharacterType character = new CharacterType(name, colour, condition, hpCurrent, hpMax, initBonus, init, inCombat);
         dbHelper.insertCharacter(characterDb, character);
+
+        // return to character selection activity
+        Context context = this;
+        Class destinationActivity = CharacterActivity.class;
+
+        Intent intent = new Intent(context, destinationActivity);
+        startActivity(intent);
+    }
+
+    public void rollInitiative(MenuItem menuItem) {
+        int initBonus;
+        String initString;
+        int initRoll;
+        Random initRandom = new Random();
+        try {
+            initBonus = Integer.parseInt(initBonusField.getText().toString());
+        } catch (NumberFormatException e) {
+            Toast.makeText(this, "Enter Initiative Bonus First!", Toast.LENGTH_SHORT).show();
+            return;
+        }
+        initRoll = initRandom.nextInt(20) + 1;
+        initRoll += initBonus;
+        initString = String.valueOf(initRoll);
+        initField.setText(initString);
     }
 }

@@ -12,7 +12,8 @@
         android:theme="@style/AppTheme">
         <activity
             android:name=".MainActivity"
-            android:launchMode="singleTop">
+            android:launchMode="singleTop"
+            android:label="@string/app_name">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -20,20 +21,23 @@
             </intent-filter>
         </activity>
         <activity android:name=".CombatActivity"
-            android:parentActivityName=".MainActivity">
+            android:parentActivityName=".MainActivity"
+            android:label="@string/combat_name">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value=".MainActivity" />
         </activity>
         <activity android:name=".CharacterActivity"
-            android:parentActivityName=".MainActivity">
+            android:label="@string/choose_character_name"
+            android:parentActivityName=".CombatActivity">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value=".MainActivity" />
+                android:value=".CombatActivity" />
         </activity>
 
         <activity android:name=".EditActivity"
-            android:parentActivityName=".CombatActivity">
+            android:label="@string/edit_character_name"
+            android:parentActivityName=".CharacterActivity">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value=".CharacterActivity" />

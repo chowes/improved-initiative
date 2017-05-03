@@ -3,13 +3,16 @@
     <item
         android:title="@string/add_character"
         android:icon="@drawable/ic_add_circle_outline_black_48dp"
+        android:orderInCategory="1"
         android:onClick="startAddCharacter"/>
     <item
         android:title="@string/replay_round"
         android:icon="@drawable/ic_replay_black_48dp"
-        android:onClick="replayLastRound"/>.
+        android:orderInCategory="2"
+        android:onClick="replayLastRound"/>
     <item
         android:title="@string/next_round"
         android:icon="@drawable/ic_play_circle_outline_black_48dp"
+        android:orderInCategory="3"
         android:onClick="startNextRound"/>
 </menu>

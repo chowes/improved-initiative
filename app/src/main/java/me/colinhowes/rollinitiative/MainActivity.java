@@ -25,9 +25,6 @@ public class MainActivity extends AppCompatActivity {
             case R.id.combat_button:
                 destinationActivity = CombatActivity.class;
                 break;
-            case R.id.edit_button:
-                destinationActivity = CharacterActivity.class;
-                break;
             default:
                 return;
         }
