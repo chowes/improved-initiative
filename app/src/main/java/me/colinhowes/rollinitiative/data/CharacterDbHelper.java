@@ -58,6 +58,17 @@ public class CharacterDbHelper extends SQLiteOpenHelper {
                 CharacterContract.CharacterEntry.COLUMN_NAME_NAME);
     }
 
+    public static Cursor getCombatants(SQLiteDatabase db) {
+        return db.query(
+                CharacterContract.CharacterEntry.TABLE_NAME,
+                null,
+                "in_combat=?",
+                new String[]{"1"},
+                null,
+                null,
+                CharacterContract.CharacterEntry.COLUMN_NAME_INIT + " DESC");
+    }
+
     public static void insertCharacter(SQLiteDatabase db, CharacterType character) {
         ContentValues values = new ContentValues();
         values.put(CharacterContract.CharacterEntry.COLUMN_NAME_NAME, character.name);

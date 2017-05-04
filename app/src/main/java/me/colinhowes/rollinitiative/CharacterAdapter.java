@@ -140,7 +140,7 @@ public class CharacterAdapter extends RecyclerView.Adapter<CharacterAdapter.Char
         // Highlight the character if it is in combat
         if (characterInCombat == 1) {
             holder.itemView.setBackgroundColor(holder.itemView.getResources()
-                    .getColor(R.color.colorActiveTurn));
+                    .getColor(R.color.colorInCombat));
         } else {
             holder.itemView.setBackgroundColor(holder.itemView.getResources()
                     .getColor(R.color.transparent));
