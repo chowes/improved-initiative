@@ -75,7 +75,8 @@ public class CharacterActivity extends AppCompatActivity
                 int characterId = (int) viewHolder.itemView.getTag();
 
                 if (swipeDir == ItemTouchHelper.LEFT) {
-                    deleteCharacter(characterId);
+                    CharacterDbHelper.deleteCharacter(db, characterId);
+                    restartLoader();
                 } else {
                     editCharacter(characterId);
                 }
@@ -84,123 +85,26 @@ public class CharacterActivity extends AppCompatActivity
         }).attachToRecyclerView(characterRecyclerView);
     }
 
-    // get all the characters in the database
-    private Cursor getCharacters() {
-        return db.query(
-                CharacterContract.CharacterEntry.TABLE_NAME,
-                null,
-                null,
-                null,
-                null,
-                null,
-                CharacterContract.CharacterEntry.COLUMN_NAME_NAME);
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        Intent intent = new Intent(this, CombatActivity.class);
+        startActivity(intent);
+        finish();
     }
 
-    // toggles whether a character is in combat
-    private void toggleInCombat(int characterId) {
-        ContentValues values = new ContentValues();
-        String selection = CharacterContract.CharacterEntry._ID + " = ?";
-        String[] selectionArgs = { String.valueOf(characterId) };
-        int inCombat;
-
-        // get the character matching characterId
-        Cursor cursor = db.query(
-            CharacterContract.CharacterEntry.TABLE_NAME,
-            null,
-            selection,
-            selectionArgs,
-            null,
-            null,
-            null);
-
-        // there should be exactly one row in the cursor
-        if (!cursor.moveToFirst()) {
-            Log.e("toggleInCombat", "Database query returned no characters with ID!");
-            return;
-        }
-
-        inCombat = cursor.getInt(cursor.getColumnIndex(
-                CharacterContract.CharacterEntry.COLUMN_NAME_IN_COMBAT));
-        cursor.close();
-
-        // toggle inCombat
-        inCombat = (inCombat == 1) ? 0 : 1;
-
-        values.put(CharacterContract.CharacterEntry.COLUMN_NAME_IN_COMBAT,
-                String.valueOf(inCombat));
-
-        // update character with new inCombat value
-        db.update(
-            CharacterContract.CharacterEntry.TABLE_NAME,
-            values,
-            selection,
-            selectionArgs);
-
-        // we have to force the loader to fetch the data again
-        getSupportLoaderManager().restartLoader(0, null, this);
-    }
-
-    // toggles whether a character is in combat
-    private void updateHealth(int characterId, boolean increase) {
-        ContentValues values = new ContentValues();
-        String selection = CharacterContract.CharacterEntry._ID + " = ?";
-        String[] selectionArgs = { String.valueOf(characterId) };
-        int currentHealth;
-
-        // get the character matching characterId
-        Cursor cursor = db.query(
-                CharacterContract.CharacterEntry.TABLE_NAME,
-                null,
-                selection,
-                selectionArgs,
-                null,
-                null,
-                null);
-
-        // there should be exactly one row in the cursor
-        if (!cursor.moveToFirst()) {
-            Log.e("updateHealth", "Database query returned no characters with ID!");
-            return;
-        }
-
-        currentHealth = cursor.getInt(cursor.getColumnIndex(
-                CharacterContract.CharacterEntry.COLUMN_NAME_HP_CURRENT));
-        cursor.close();
-
-        // increase or decrease health
-        if (increase == true) {
-            currentHealth += 1;
-        } else {
-            currentHealth -= 1;
-        }
-
-        values.put(CharacterContract.CharacterEntry.COLUMN_NAME_HP_CURRENT,
-                String.valueOf(currentHealth));
-
-        // update character with new inCombat value
-        db.update(
-                CharacterContract.CharacterEntry.TABLE_NAME,
-                values,
-                selection,
-                selectionArgs);
-
-        // we have to force the loader to fetch the data again
-        getSupportLoaderManager().restartLoader(0, null, this);
-    }
-
-    private void deleteCharacter(int characterId) {
-        String selection = CharacterContract.CharacterEntry._ID + " = ?";
-        String[] selectionArgs = { String.valueOf(characterId) };
-
-        db.delete(CharacterContract.CharacterEntry.TABLE_NAME, selection, selectionArgs);
-
-        // we have to force the loader to fetch the data again
+    private void restartLoader() {
         getSupportLoaderManager().restartLoader(0, null, this);
     }
 
     private void editCharacter(int characterId) {
-        Toast.makeText(this, "Edit Character " + characterId, Toast.LENGTH_SHORT).show();
-        getSupportLoaderManager().restartLoader(0, null, this);
+        Context context = this;
+        Class destinationActivity = EditActivity.class;
+
+        Intent intent = new Intent(context, destinationActivity);
+        intent.putExtra("id", characterId);
+        startActivity(intent);
+        restartLoader();
     }
 
     /*
@@ -218,7 +122,7 @@ public class CharacterActivity extends AppCompatActivity
     protected void onResume() {
         super.onResume();
 
-        getSupportLoaderManager().restartLoader(0, null, this);
+        restartLoader();
     }
 
     /*
@@ -246,7 +150,7 @@ public class CharacterActivity extends AppCompatActivity
             public Cursor loadInBackground() {
 
                 try {
-                    return getCharacters();
+                    return CharacterDbHelper.getCharacters(db);
                 } catch (Exception e) {
                     Log.e("Load Error:", "Unable to load character data!");
                     e.printStackTrace();
@@ -285,16 +189,52 @@ public class CharacterActivity extends AppCompatActivity
     public void onCharacterClick(int characterId, EventType eventType) {
         switch (eventType) {
             case INCREASE_HEALTH:
-                updateHealth(characterId, true);
+                CharacterDbHelper.updateHealth(db, characterId, true);
+                // we have to force the loader to fetch the data again
+                restartLoader();
                 break;
             case DECREASE_HEALTH:
-                updateHealth(characterId, false);
+                CharacterDbHelper.updateHealth(db, characterId, false);
+                // we have to force the loader to fetch the data again
+                restartLoader();
                 break;
             case ITEM_CLICK:
-                toggleInCombat(characterId);
+                CharacterDbHelper.toggleInCombat(db, characterId);
+                // we have to force the loader to fetch the data again
+                restartLoader();
                 break;
             default:
-                return;
+                break;
         }
+    }
+
+    public void rollInitiative(MenuItem menuItem) {
+        Toast.makeText(this, "Roll Initiative", Toast.LENGTH_SHORT).show();
+        int id;
+        int initBonus;
+        int initRoll;
+
+        ContentValues values = new ContentValues();
+        Random initRandom = new Random();
+
+        Cursor cursor = CharacterDbHelper.getCharacters(db);
+        if (!cursor.moveToFirst()) {
+            cursor.close();
+            return;
+        }
+        do {
+            initBonus = cursor.getInt(cursor.getColumnIndex(CharacterContract.CharacterEntry.COLUMN_NAME_INIT_BONUS));
+            id = cursor.getInt(cursor.getColumnIndex(CharacterContract.CharacterEntry._ID));
+
+            initRoll = initRandom.nextInt(20) + 1;
+            initRoll += initBonus;
+            values.put(CharacterContract.CharacterEntry.COLUMN_NAME_INIT,
+                    String.valueOf(initRoll));
+
+            // update character with new inCombat value
+            CharacterDbHelper.updateCharacter(db, id, values);
+        } while (cursor.moveToNext());
+        cursor.close();
+        restartLoader();
     }
 }

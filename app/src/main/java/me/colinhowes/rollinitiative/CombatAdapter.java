@@ -54,8 +54,6 @@ public class CombatAdapter extends RecyclerView.Adapter<CombatAdapter.CombatAdap
                 characterCursor.getColumnIndex(CharacterContract.CharacterEntry._ID));
         String characterName = characterCursor.getString(
                 characterCursor.getColumnIndex(CharacterContract.CharacterEntry.COLUMN_NAME_NAME));
-        String characterConditions = characterCursor.getString(
-                characterCursor.getColumnIndex(CharacterContract.CharacterEntry.COLUMN_NAME_CONDITION));
         int characterHitPointCurrent = characterCursor.getInt(
                 characterCursor.getColumnIndex(CharacterContract.CharacterEntry.COLUMN_NAME_HP_CURRENT));
         int characterHitPointTotal = characterCursor.getInt(
@@ -69,23 +67,22 @@ public class CombatAdapter extends RecyclerView.Adapter<CombatAdapter.CombatAdap
         holder.itemView.setTag(characterId);
         holder.characterName.setText(characterName);
         holder.characterHitPoints.setText("HP: " + characterHitPointCurrent + "/" + characterHitPointTotal);
-        holder.characterConditions.setText("Condition:\n" + characterConditions);
         holder.characterInitiative.setText("Init: " + characterInitiative);
 
         switch (characterColour) {
-            case "red":
+            case "Red":
                 holder.characterColour.setImageResource(R.drawable.circle_red);
                 break;
-            case "blue":
+            case "Blue":
                 holder.characterColour.setImageResource(R.drawable.circle_blue);
                 break;
-            case "yellow":
+            case "Yellow":
                 holder.characterColour.setImageResource(R.drawable.circle_yellow);
                 break;
-            case "green":
+            case "Green":
                 holder.characterColour.setImageResource(R.drawable.circle_green);
                 break;
-            case "black":
+            case "Black":
                 holder.characterColour.setImageResource(R.drawable.circle_black);
                 break;
             default:

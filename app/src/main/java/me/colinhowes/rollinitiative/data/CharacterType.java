@@ -7,18 +7,16 @@ package me.colinhowes.rollinitiative.data;
 public class CharacterType {
     String name;
     String colour;
-    String condition;
     int hpCurrent;
     int hpMax;
     int initBonus;
     int init;
     int inCombat;
 
-    public CharacterType(String name, String colour, String condition,
+    public CharacterType(String name, String colour,
                      int hpCurrent, int hpMax, int initBonus, int init, int inCombat) {
         this.name = name;
         this.colour = colour;
-        this.condition = condition;
         this.hpCurrent = hpCurrent;
         this.hpMax = hpMax;
         this.initBonus = initBonus;

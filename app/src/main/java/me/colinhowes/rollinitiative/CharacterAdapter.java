@@ -97,6 +97,8 @@ public class CharacterAdapter extends RecyclerView.Adapter<CharacterAdapter.Char
                 characterCursor.getColumnIndex(CharacterContract.CharacterEntry.COLUMN_NAME_HP_TOTAL));
         int characterInitBonus = characterCursor.getInt(
                 characterCursor.getColumnIndex(CharacterContract.CharacterEntry.COLUMN_NAME_INIT_BONUS));
+        int characterInitScore = characterCursor.getInt(
+                characterCursor.getColumnIndex(CharacterContract.CharacterEntry.COLUMN_NAME_INIT));
         String characterColour = characterCursor.getString(
                 characterCursor.getColumnIndex(CharacterContract.CharacterEntry.COLUMN_NAME_COLOUR));
         int characterInCombat = characterCursor.getInt(
@@ -110,23 +112,24 @@ public class CharacterAdapter extends RecyclerView.Adapter<CharacterAdapter.Char
         // TODO: Should be using string resources here, fix this.
         holder.characterName.setText(characterName);
         holder.characterHitPoints.setText("HP: " + characterHitPointCurrent + "/" + characterHitPointTotal);
-        holder.characterInitBonus.setText("Init. Bonus: " + characterInitBonus);
+        holder.characterInitBonus.setText("Bonus: " + characterInitBonus);
+        holder.characterInitScore.setText("Score: " + characterInitScore);
 
         // Set the colour - consider changing drawable to something that can be coloured dynamically
         switch (characterColour) {
-            case "red":
+            case "Red":
                 holder.characterColour.setImageResource(R.drawable.circle_red);
                 break;
-            case "blue":
+            case "Blue":
                 holder.characterColour.setImageResource(R.drawable.circle_blue);
                 break;
-            case "yellow":
+            case "Yellow":
                 holder.characterColour.setImageResource(R.drawable.circle_yellow);
                 break;
-            case "green":
+            case "Green":
                 holder.characterColour.setImageResource(R.drawable.circle_green);
                 break;
-            case "black":
+            case "Black":
                 holder.characterColour.setImageResource(R.drawable.circle_black);
                 break;
             default:
@@ -159,6 +162,7 @@ public class CharacterAdapter extends RecyclerView.Adapter<CharacterAdapter.Char
         TextView characterName;
         TextView characterHitPoints;
         TextView characterInitBonus;
+        TextView characterInitScore;
         ImageView characterColour;
         ImageButton minusButton;
         ImageButton plusButton;
@@ -169,6 +173,7 @@ public class CharacterAdapter extends RecyclerView.Adapter<CharacterAdapter.Char
             characterName = (TextView) itemView.findViewById(R.id.tv_name_select);
             characterHitPoints = (TextView) itemView.findViewById(R.id.tv_hp_select);
             characterInitBonus = (TextView) itemView.findViewById(R.id.tv_init_bonus_select);
+            characterInitScore = (TextView) itemView.findViewById(R.id.tv_init_score_select);
             characterColour = (ImageView) itemView.findViewById(R.id.iv_color_select);
             minusButton = (ImageButton) itemView.findViewById(R.id.ib_hp_minus_select);
             plusButton = (ImageButton) itemView.findViewById(R.id.ib_hp_add_select);
@@ -193,7 +198,6 @@ public class CharacterAdapter extends RecyclerView.Adapter<CharacterAdapter.Char
             if (v.getId() == R.id.ib_hp_minus_select) {
                 eventType = DECREASE_HEALTH;
             } else if (v.getId() == R.id.ib_hp_add_select) {
-                Toast.makeText(context, "Add", Toast.LENGTH_SHORT).show();
                 eventType = INCREASE_HEALTH;
             } else {
                 eventType = ITEM_CLICK;

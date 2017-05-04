@@ -22,7 +22,6 @@ public class TestUtil {
         ContentValues cv = new ContentValues();
         cv.put(CharacterContract.CharacterEntry.COLUMN_NAME_NAME, "Beatrix");
         cv.put(CharacterContract.CharacterEntry.COLUMN_NAME_COLOUR, "red");
-        cv.put(CharacterContract.CharacterEntry.COLUMN_NAME_CONDITION, "normal");
         cv.put(CharacterContract.CharacterEntry.COLUMN_NAME_HP_CURRENT, 14);
         cv.put(CharacterContract.CharacterEntry.COLUMN_NAME_HP_TOTAL, 17);
         cv.put(CharacterContract.CharacterEntry.COLUMN_NAME_IN_COMBAT, 1);
@@ -33,7 +32,6 @@ public class TestUtil {
         cv = new ContentValues();
         cv.put(CharacterContract.CharacterEntry.COLUMN_NAME_NAME, "Ragnar");
         cv.put(CharacterContract.CharacterEntry.COLUMN_NAME_COLOUR, "blue");
-        cv.put(CharacterContract.CharacterEntry.COLUMN_NAME_CONDITION, "fatigued");
         cv.put(CharacterContract.CharacterEntry.COLUMN_NAME_HP_CURRENT, 21);
         cv.put(CharacterContract.CharacterEntry.COLUMN_NAME_HP_TOTAL, 27);
         cv.put(CharacterContract.CharacterEntry.COLUMN_NAME_IN_COMBAT, 1);
@@ -44,7 +42,6 @@ public class TestUtil {
         cv = new ContentValues();
         cv.put(CharacterContract.CharacterEntry.COLUMN_NAME_NAME, "Liesl");
         cv.put(CharacterContract.CharacterEntry.COLUMN_NAME_COLOUR, "blue");
-        cv.put(CharacterContract.CharacterEntry.COLUMN_NAME_CONDITION, "normal");
         cv.put(CharacterContract.CharacterEntry.COLUMN_NAME_HP_CURRENT, 14);
         cv.put(CharacterContract.CharacterEntry.COLUMN_NAME_HP_TOTAL, 21);
         cv.put(CharacterContract.CharacterEntry.COLUMN_NAME_IN_COMBAT, 1);
@@ -55,7 +52,6 @@ public class TestUtil {
         cv = new ContentValues();
         cv.put(CharacterContract.CharacterEntry.COLUMN_NAME_NAME, "Goblin");
         cv.put(CharacterContract.CharacterEntry.COLUMN_NAME_COLOUR, "yellow");
-        cv.put(CharacterContract.CharacterEntry.COLUMN_NAME_CONDITION, "normal");
         cv.put(CharacterContract.CharacterEntry.COLUMN_NAME_HP_CURRENT, 15);
         cv.put(CharacterContract.CharacterEntry.COLUMN_NAME_HP_TOTAL, 15);
         cv.put(CharacterContract.CharacterEntry.COLUMN_NAME_IN_COMBAT, 1);
@@ -66,7 +62,6 @@ public class TestUtil {
         cv = new ContentValues();
         cv.put(CharacterContract.CharacterEntry.COLUMN_NAME_NAME, "Goblin");
         cv.put(CharacterContract.CharacterEntry.COLUMN_NAME_COLOUR, "yellow");
-        cv.put(CharacterContract.CharacterEntry.COLUMN_NAME_CONDITION, "normal");
         cv.put(CharacterContract.CharacterEntry.COLUMN_NAME_HP_CURRENT, 15);
         cv.put(CharacterContract.CharacterEntry.COLUMN_NAME_HP_TOTAL, 15);
         cv.put(CharacterContract.CharacterEntry.COLUMN_NAME_IN_COMBAT, 1);
