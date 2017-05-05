@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <item
+        android:title="@string/roll_initiative"
+        android:icon="@drawable/ic_casino_white_48dp"
+        app:showAsAction="always"
+        android:orderInCategory="100"
+        android:onClick="rollInitiative"/>
+</menu>

@@ -1,18 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
     <item
-        android:title="@string/add_character"
-        android:icon="@drawable/ic_add_circle_outline_black_48dp"
-        android:orderInCategory="1"
-        android:onClick="startAddCharacter"/>
-    <item
         android:title="@string/replay_round"
-        android:icon="@drawable/ic_replay_black_48dp"
-        android:orderInCategory="2"
+        android:icon="@drawable/ic_skip_previous_black_48dp"
+        android:orderInCategory="1"
         android:onClick="replayLastRound"/>
     <item
+        android:title="@string/add_character"
+        android:icon="@drawable/ic_supervisor_account_black_48dp"
+        android:orderInCategory="2"
+        android:onClick="startAddCharacter"/>
+    <item
         android:title="@string/next_round"
-        android:icon="@drawable/ic_play_circle_outline_black_48dp"
+        android:icon="@drawable/ic_skip_next_black_48dp"
         android:orderInCategory="3"
         android:onClick="startNextRound"/>
 </menu>
