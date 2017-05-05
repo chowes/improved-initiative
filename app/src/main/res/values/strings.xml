@@ -2,7 +2,7 @@
     <string name="app_name">Improved Initiative</string>
     <string name="combat_name">Improved Initiative</string>
     <string name="edit_character_name">Create a new Character</string>
-    <string name="choose_character_name">Select Characters</string>
+    <string name="choose_character_name">Manage Characters</string>
 
     <!--Main Screen-->
     <string name="start_combat">Start Combat</string>
@@ -11,7 +11,7 @@
     <!--Combat Screen-->
     <string name="next_round">Next Turn</string>
     <string name="replay_round">Replay Turn</string>
-    <string name="add_character">Add Character</string>
+    <string name="add_character">Characters</string>
 
     <!--Character Manager-->
 
@@ -28,7 +28,9 @@
     <string name="edit_conditions">Condition:</string>
     <string name="edit_in_combat">In Combat:</string>
     <string name="slash">/</string>
-    <string name="roll_initative">Roll Initiative</string>
+    <string name="roll_initiative">Roll Initiative</string>
+    <string name="resume_encounter">Resume Combat</string>
+    <string name="new_encounter">New Encounter</string>
 
     <string-array name="color_array">
         <item>Red</item>

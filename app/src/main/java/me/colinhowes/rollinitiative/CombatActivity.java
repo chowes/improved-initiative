@@ -1,5 +1,6 @@
 package me.colinhowes.rollinitiative;
 
+import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
@@ -14,6 +15,7 @@ import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.helper.ItemTouchHelper;
 import android.util.Log;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.Toast;
 
 import me.colinhowes.rollinitiative.data.CharacterContract;
@@ -53,11 +55,10 @@ public class CombatActivity extends AppCompatActivity implements
          * Swipe left - delete character
          * Swipe right - edit character
          */
-        new ItemTouchHelper(new ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.LEFT | ItemTouchHelper.RIGHT) {
+        new ItemTouchHelper(new ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.UP | ItemTouchHelper.DOWN | ItemTouchHelper.LEFT | ItemTouchHelper.RIGHT) {
 
-            // we aren't using onMove here
             @Override
-            public boolean onMove(RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder, RecyclerView.ViewHolder target) {
+            public boolean onMove(RecyclerView recyclerView, RecyclerView.ViewHolder dragged, RecyclerView.ViewHolder target) {
                 return false;
             }
 
@@ -94,7 +95,6 @@ public class CombatActivity extends AppCompatActivity implements
     @Override
     protected void onResume() {
         super.onResume();
-
         restartLoader();
     }
 
@@ -169,9 +169,8 @@ public class CombatActivity extends AppCompatActivity implements
                 restartLoader();
                 break;
             case ITEM_CLICK:
-                CharacterDbHelper.toggleInCombat(db, characterId);
                 // we have to force the loader to fetch the data again
-                restartLoader();
+                // restartLoader();
                 break;
             default:
                 break;
@@ -188,11 +187,13 @@ public class CombatActivity extends AppCompatActivity implements
     }
 
     public void replayLastRound(MenuItem item) {
-        Toast.makeText(this, "Replay Round", Toast.LENGTH_SHORT).show();
+        CharacterDbHelper.lastTurn(db);
+        restartLoader();
     }
 
     public void startNextRound(MenuItem item) {
-        Toast.makeText(this, "Next Round", Toast.LENGTH_SHORT).show();
+        CharacterDbHelper.nextTurn(db);
+        restartLoader();
     }
 
 }

@@ -33,6 +33,7 @@ public class CharacterDbHelper extends SQLiteOpenHelper {
                 CharacterContract.CharacterEntry.COLUMN_NAME_HP_TOTAL + " INTEGER NOT NULL, " +
                 CharacterContract.CharacterEntry.COLUMN_NAME_INIT_BONUS + " INTEGER NOT NULL, " +
                 CharacterContract.CharacterEntry.COLUMN_NAME_INIT + " INTEGER NOT NULL, " +
+                CharacterContract.CharacterEntry.COLUMN_NAME_TURN_ORDER + " INTEGER, " +
                 CharacterContract.CharacterEntry.COLUMN_NAME_IN_COMBAT + " INTEGER NOT NULL" +
                 ");";
 
@@ -59,6 +60,17 @@ public class CharacterDbHelper extends SQLiteOpenHelper {
     }
 
     public static Cursor getCombatants(SQLiteDatabase db) {
+        return db.query(
+                CharacterContract.CharacterEntry.TABLE_NAME,
+                null,
+                "in_combat=?",
+                new String[]{"1"},
+                null,
+                null,
+                CharacterContract.CharacterEntry.COLUMN_NAME_TURN_ORDER);
+    }
+
+    public static Cursor getCombatantsByInit(SQLiteDatabase db) {
         return db.query(
                 CharacterContract.CharacterEntry.TABLE_NAME,
                 null,
@@ -98,6 +110,109 @@ public class CharacterDbHelper extends SQLiteOpenHelper {
         String[] selectionArgs = { String.valueOf(characterId) };
 
         db.delete(CharacterContract.CharacterEntry.TABLE_NAME, selection, selectionArgs);
+    }
+
+    public static void nextTurn(SQLiteDatabase db) {
+        ContentValues values = new ContentValues();
+        int characterId;
+        int index = 0;
+        int lastIndex;
+        Cursor cursor;
+        String selection = CharacterContract.CharacterEntry._ID + " = ?";
+        String[] selectionArgs = { "" };
+
+        cursor = getCombatants(db);
+        if(!cursor.moveToFirst()) {
+            return;
+        }
+
+        lastIndex = cursor.getCount() - 1;
+        characterId = cursor.getInt(cursor.getColumnIndex(CharacterContract.CharacterEntry._ID));
+        selectionArgs[0] = String.valueOf(characterId);
+
+        values.put(CharacterContract.CharacterEntry.COLUMN_NAME_TURN_ORDER,
+                String.valueOf(lastIndex));
+
+        db.update(
+                CharacterContract.CharacterEntry.TABLE_NAME,
+                values,
+                selection,
+                selectionArgs);
+
+        while (cursor.moveToNext()) {
+            characterId = cursor.getInt(cursor.getColumnIndex(CharacterContract.CharacterEntry._ID));
+            selectionArgs[0] = String.valueOf(characterId);
+
+            values.put(CharacterContract.CharacterEntry.COLUMN_NAME_TURN_ORDER,
+                    String.valueOf(index));
+
+            db.update(
+                    CharacterContract.CharacterEntry.TABLE_NAME,
+                    values,
+                    selection,
+                    selectionArgs);
+
+            index++;
+        }
+    }
+
+    public static void lastTurn(SQLiteDatabase db) {
+        ContentValues values = new ContentValues();
+        int characterId;
+        int index = 0;
+        Cursor cursor;
+        String selection = CharacterContract.CharacterEntry._ID + " = ?";
+        String[] selectionArgs = { "" };
+
+        cursor = getCombatants(db);
+        if(!cursor.moveToLast()) {
+            return;
+        }
+
+        characterId = cursor.getInt(cursor.getColumnIndex(CharacterContract.CharacterEntry._ID));
+        selectionArgs[0] = String.valueOf(characterId);
+
+        values.put(CharacterContract.CharacterEntry.COLUMN_NAME_TURN_ORDER,
+                String.valueOf(index));
+
+        db.update(
+                CharacterContract.CharacterEntry.TABLE_NAME,
+                values,
+                selection,
+                selectionArgs);
+
+        index = cursor.getCount() - 1;
+
+       while (cursor.moveToPrevious()) {
+            characterId = cursor.getInt(cursor.getColumnIndex(CharacterContract.CharacterEntry._ID));
+            selectionArgs[0] = String.valueOf(characterId);
+
+            values.put(CharacterContract.CharacterEntry.COLUMN_NAME_TURN_ORDER,
+                    String.valueOf(index));
+
+            db.update(
+                    CharacterContract.CharacterEntry.TABLE_NAME,
+                    values,
+                    selection,
+                    selectionArgs);
+
+           index--;
+        }
+    }
+
+    public static void updateTurnOrder(SQLiteDatabase db, int characterId, int newTurnOrder) {
+        ContentValues values = new ContentValues();
+        String selection = CharacterContract.CharacterEntry._ID + " = ?";
+        String[] selectionArgs = { String.valueOf(characterId) };
+
+        values.put(CharacterContract.CharacterEntry.COLUMN_NAME_TURN_ORDER,
+                String.valueOf(newTurnOrder));
+
+        db.update(
+                CharacterContract.CharacterEntry.TABLE_NAME,
+                values,
+                selection,
+                selectionArgs);
     }
 
     public static void toggleInCombat(SQLiteDatabase db, int characterId) {

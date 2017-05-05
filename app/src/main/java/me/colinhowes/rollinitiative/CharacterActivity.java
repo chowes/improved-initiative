@@ -16,6 +16,7 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.helper.ItemTouchHelper;
 import android.util.Log;
+import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Toast;
@@ -88,9 +89,15 @@ public class CharacterActivity extends AppCompatActivity
     @Override
     public void onBackPressed() {
         super.onBackPressed();
-        Intent intent = new Intent(this, CombatActivity.class);
-        startActivity(intent);
-        finish();
+        resumeCombat(null);
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+
+        // Inflate the top menu
+        getMenuInflater().inflate(R.menu.character_top, menu);
+        return true;
     }
 
     private void restartLoader() {
@@ -116,6 +123,26 @@ public class CharacterActivity extends AppCompatActivity
 
         Intent intent = new Intent(context, destinationActivity);
         startActivity(intent);
+    }
+
+    public void getTurnOrder() {
+        Cursor cursor = CharacterDbHelper.getCombatantsByInit(db);
+        ContentValues values = new ContentValues();
+        int characterId;
+        int turnOrder = 0;
+
+        if (!cursor.moveToFirst()) {
+            return;
+        }
+
+        do {
+            characterId = cursor.getInt(cursor.getColumnIndex(
+                    CharacterContract.CharacterEntry._ID));
+            values.put(CharacterContract.CharacterEntry.COLUMN_NAME_TURN_ORDER, turnOrder);
+            CharacterDbHelper.updateCharacter(db, characterId, values);
+            turnOrder++;
+        } while (cursor.moveToNext());
+        cursor.close();
     }
 
     @Override
@@ -236,5 +263,18 @@ public class CharacterActivity extends AppCompatActivity
         } while (cursor.moveToNext());
         cursor.close();
         restartLoader();
+    }
+
+    public void startCombat(MenuItem menuItem) {
+        Intent intent = new Intent(this, CombatActivity.class);
+        getTurnOrder();
+        startActivity(intent);
+        finish();
+    }
+
+    public void resumeCombat(MenuItem menuItem) {
+        Intent intent = new Intent(this, CombatActivity.class);
+        startActivity(intent);
+        finish();
     }
 }
