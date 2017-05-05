@@ -92,6 +92,26 @@ public class CombatActivity extends AppCompatActivity implements
         getSupportLoaderManager().restartLoader(0, null, this);
     }
 
+    public void getTurnOrder() {
+        Cursor cursor = CharacterDbHelper.getCombatants(db);
+        ContentValues values = new ContentValues();
+        int characterId;
+        int turnOrder = 0;
+
+        if (!cursor.moveToFirst()) {
+            return;
+        }
+
+        do {
+            characterId = cursor.getInt(cursor.getColumnIndex(
+                    CharacterContract.CharacterEntry._ID));
+            values.put(CharacterContract.CharacterEntry.COLUMN_NAME_TURN_ORDER, turnOrder);
+            CharacterDbHelper.updateCharacter(db, characterId, values);
+            turnOrder++;
+        } while (cursor.moveToNext());
+        cursor.close();
+    }
+
     @Override
     protected void onResume() {
         super.onResume();
@@ -114,6 +134,7 @@ public class CombatActivity extends AppCompatActivity implements
                     deliverResult(newCharacterData);
                 } else {
                     // Otherwise, load new data
+                    getTurnOrder();
                     forceLoad();
                 }
             }

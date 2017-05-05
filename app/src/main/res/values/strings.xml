@@ -7,6 +7,7 @@
     <!--Main Screen-->
     <string name="start_combat">Start Combat</string>
     <string name="edit_characters">Edit Characters</string>
+    <string name="about">About</string>
 
     <!--Combat Screen-->
     <string name="next_round">Next Turn</string>
@@ -31,6 +32,7 @@
     <string name="roll_initiative">Roll Initiative</string>
     <string name="resume_encounter">Resume Combat</string>
     <string name="new_encounter">New Encounter</string>
+    <string name="save_character">Save Character</string>
 
     <string-array name="color_array">
         <item>Red</item>
