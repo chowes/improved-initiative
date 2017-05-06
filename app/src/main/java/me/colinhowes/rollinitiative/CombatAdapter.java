@@ -12,7 +12,11 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.util.ArrayList;
+import java.util.Collections;
+
 import me.colinhowes.rollinitiative.data.CharacterContract;
+import me.colinhowes.rollinitiative.data.CharacterType;
 
 import static me.colinhowes.rollinitiative.CombatAdapter.CombatClickListener.EventType.DECREASE_HEALTH;
 import static me.colinhowes.rollinitiative.CombatAdapter.CombatClickListener.EventType.INCREASE_HEALTH;
@@ -24,12 +28,12 @@ import static me.colinhowes.rollinitiative.CombatAdapter.CombatClickListener.Eve
 
 public class CombatAdapter extends RecyclerView.Adapter<CombatAdapter.CombatAdapterViewHolder> {
 
-    private Cursor combatCursor;
+    private ArrayList<CharacterType> characterList;
     final private CombatClickListener clickListener;
     private Context context;
 
-    public CombatAdapter(Context context, Cursor cursor, CombatClickListener listener) {
-        this.combatCursor = cursor;
+    public CombatAdapter(Context context, ArrayList<CharacterType> characterList, CombatClickListener listener) {
+        this.characterList = characterList;
         this.clickListener = listener;
         this.context = context;
     }
@@ -43,22 +47,33 @@ public class CombatAdapter extends RecyclerView.Adapter<CombatAdapter.CombatAdap
         void onCombatClick(int characterId, EventType eventType);
     }
 
-    public Cursor changeCursor(Cursor newCursor) {
-        if (combatCursor == newCursor) {
+    public ArrayList<CharacterType> changeList(ArrayList<CharacterType> newList) {
+        if (characterList == newList) {
             return null;
         }
 
-        Cursor temp = combatCursor;
-        combatCursor = newCursor;
+        ArrayList<CharacterType> temp = characterList;
+        characterList = newList;
 
-        if (combatCursor != null) {
+        if (characterList != null) {
             notifyDataSetChanged();
-        }
-        if (temp != null) {
-            temp.close();
         }
 
         return temp;
+    }
+
+    public boolean swapCharacters(int fromIndex, int toIndex) {
+        if (fromIndex < toIndex) {
+            for (int i = fromIndex; i < toIndex; i++) {
+                Collections.swap(characterList, i, i + 1);
+            }
+        } else {
+            for (int i = fromIndex; i > toIndex; i--) {
+                Collections.swap(characterList, i, i - 1);
+            }
+        }
+        notifyItemMoved(fromIndex, toIndex);
+        return true;
     }
 
     @Override
@@ -73,40 +88,30 @@ public class CombatAdapter extends RecyclerView.Adapter<CombatAdapter.CombatAdap
 
     @Override
     public void onBindViewHolder(CombatAdapterViewHolder holder, int position) {
-        if (!combatCursor.moveToPosition(position)) {
-            // something probably went wrong when we manipulated the database
-            Log.e("onBindViewHolder", "Cursor returned null on move to position");
+        CharacterType character;
+        try {
+            character = characterList.get(position);
+        } catch (IndexOutOfBoundsException e) {
+            Log.e("onBindViewHolder", "Index is out of bounds!");
             return;
         }
 
-        int characterId = combatCursor.getInt(
-                combatCursor.getColumnIndex(CharacterContract.CharacterEntry._ID));
-        String characterName = combatCursor.getString(
-                combatCursor.getColumnIndex(CharacterContract.CharacterEntry.COLUMN_NAME_NAME));
-        int characterHitPointCurrent = combatCursor.getInt(
-                combatCursor.getColumnIndex(CharacterContract.CharacterEntry.COLUMN_NAME_HP_CURRENT));
-        int characterHitPointTotal = combatCursor.getInt(
-                combatCursor.getColumnIndex(CharacterContract.CharacterEntry.COLUMN_NAME_HP_TOTAL));
-        int characterInitBonus = combatCursor.getInt(
-                combatCursor.getColumnIndex(CharacterContract.CharacterEntry.COLUMN_NAME_INIT_BONUS));
-        int characterInitScore = combatCursor.getInt(
-                combatCursor.getColumnIndex(CharacterContract.CharacterEntry.COLUMN_NAME_INIT));
-        String characterColour = combatCursor.getString(
-                combatCursor.getColumnIndex(CharacterContract.CharacterEntry.COLUMN_NAME_COLOUR));
+
 
         // This tag is used to get the character ID when we want to update the database
-        holder.itemView.setTag(characterId);
-        holder.plusButton.setTag(characterId);
-        holder.minusButton.setTag(characterId);
+        holder.itemView.setTag(character.getId());
+        holder.plusButton.setTag(character.getId());
+        holder.minusButton.setTag(character.getId());
 
         // TODO: Should be using string resources here, fix this.
-        holder.characterName.setText(characterName);
-        holder.characterHitPoints.setText("HP: " + characterHitPointCurrent + "/" + characterHitPointTotal);
-        holder.characterInitBonus.setText("Bonus: " + characterInitBonus);
-        holder.characterInitScore.setText("Score: " + characterInitScore);
+        holder.characterName.setText(character.getName());
+        holder.characterHitPoints.setText("HP: " + character.getHpCurrent()+ "/" +
+                character.getHpTotal());
+        holder.characterInitBonus.setText("Bonus: " + character.getInitBonus());
+        holder.characterInitScore.setText("Score: " + character.getInit());
 
         // Set the colour - consider changing drawable to something that can be coloured dynamically
-        switch (characterColour) {
+        switch (character.getColour()) {
             case "Red":
                 holder.characterColour.setImageResource(R.drawable.circle_red);
                 break;
@@ -129,19 +134,29 @@ public class CombatAdapter extends RecyclerView.Adapter<CombatAdapter.CombatAdap
 
         // Highlight the character if it is in combat
         if (position == 0) {
-            holder.itemView.setBackgroundColor(holder.itemView.getResources()
+            setActiveCharacter(holder, true);
+        } else {
+            setActiveCharacter(holder, false);
+        }
+    }
+
+    public void setActiveCharacter(RecyclerView.ViewHolder viewHolder, boolean isActive) {
+        // Highlight the character if it is in combat
+        if (isActive) {
+            viewHolder.itemView.setBackgroundColor(viewHolder.itemView.getResources()
                     .getColor(R.color.colorActiveTurn));
         } else {
-            holder.itemView.setBackgroundColor(holder.itemView.getResources()
-                    .getColor(R.color.transparent));
+            viewHolder.itemView.setBackgroundColor(viewHolder.itemView.getResources()
+                    .getColor(R.color.white));
         }
+
     }
 
     @Override
     public int getItemCount() {
-        if (combatCursor != null) {
+        if (characterList != null) {
             // We need this check since we do our load asynchronously
-            return combatCursor.getCount();
+            return characterList.size();
         } else {
             return 0;
         }

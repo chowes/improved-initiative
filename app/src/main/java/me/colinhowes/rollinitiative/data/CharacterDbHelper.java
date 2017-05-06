@@ -81,6 +81,21 @@ public class CharacterDbHelper extends SQLiteOpenHelper {
                 CharacterContract.CharacterEntry.COLUMN_NAME_INIT + " DESC");
     }
 
+    public static Cursor getCharacter(SQLiteDatabase db, int characterId) {
+        String selection = CharacterContract.CharacterEntry._ID + " = ?";
+        String[] selectionArgs = {String.valueOf(characterId)};
+
+        // get the character matching characterId
+        return db.query(
+                CharacterContract.CharacterEntry.TABLE_NAME,
+                null,
+                selection,
+                selectionArgs,
+                null,
+                null,
+                null);
+    }
+
     public static void insertCharacter(SQLiteDatabase db, CharacterType character) {
         ContentValues values = new ContentValues();
         values.put(CharacterContract.CharacterEntry.COLUMN_NAME_NAME, character.name);
@@ -198,21 +213,6 @@ public class CharacterDbHelper extends SQLiteOpenHelper {
 
            index--;
         }
-    }
-
-    public static void updateTurnOrder(SQLiteDatabase db, int characterId, int newTurnOrder) {
-        ContentValues values = new ContentValues();
-        String selection = CharacterContract.CharacterEntry._ID + " = ?";
-        String[] selectionArgs = { String.valueOf(characterId) };
-
-        values.put(CharacterContract.CharacterEntry.COLUMN_NAME_TURN_ORDER,
-                String.valueOf(newTurnOrder));
-
-        db.update(
-                CharacterContract.CharacterEntry.TABLE_NAME,
-                values,
-                selection,
-                selectionArgs);
     }
 
     public static void toggleInCombat(SQLiteDatabase db, int characterId) {
