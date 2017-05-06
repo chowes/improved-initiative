@@ -82,5 +82,17 @@ public class CharacterType {
     public int getTurnOrder() {
         return this.turnOrder;
     }
+
+    public void setHealth(int health) {
+        this.hpCurrent = health;
+    }
+
+    public void setInCombat(int inCombat) {
+        this.hpCurrent = inCombat;
+    }
+
+    public void setTurnOrder(int turnOrder) {
+        this.turnOrder = turnOrder;
+    }
 }
 

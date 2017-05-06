@@ -44,7 +44,7 @@ public class CombatAdapter extends RecyclerView.Adapter<CombatAdapter.CombatAdap
             DECREASE_HEALTH,
             ITEM_CLICK
         }
-        void onCombatClick(int characterId, EventType eventType);
+        void onCombatClick(int position, EventType eventType);
     }
 
     public ArrayList<CharacterType> changeList(ArrayList<CharacterType> newList) {
@@ -63,6 +63,9 @@ public class CombatAdapter extends RecyclerView.Adapter<CombatAdapter.CombatAdap
     }
 
     public boolean swapCharacters(int fromIndex, int toIndex) {
+        if (characterList.isEmpty()) {
+            return false;
+        }
         if (fromIndex < toIndex) {
             for (int i = fromIndex; i < toIndex; i++) {
                 Collections.swap(characterList, i, i + 1);
@@ -99,9 +102,9 @@ public class CombatAdapter extends RecyclerView.Adapter<CombatAdapter.CombatAdap
 
 
         // This tag is used to get the character ID when we want to update the database
-        holder.itemView.setTag(character.getId());
-        holder.plusButton.setTag(character.getId());
-        holder.minusButton.setTag(character.getId());
+        holder.itemView.setTag(position);
+        holder.plusButton.setTag(position);
+        holder.minusButton.setTag(position);
 
         // TODO: Should be using string resources here, fix this.
         holder.characterName.setText(character.getName());
@@ -142,6 +145,9 @@ public class CombatAdapter extends RecyclerView.Adapter<CombatAdapter.CombatAdap
 
     public void setActiveCharacter(RecyclerView.ViewHolder viewHolder, boolean isActive) {
         // Highlight the character if it is in combat
+        if (viewHolder == null) {
+            return;
+        }
         if (isActive) {
             viewHolder.itemView.setBackgroundColor(viewHolder.itemView.getResources()
                     .getColor(R.color.colorActiveTurn));
@@ -160,6 +166,10 @@ public class CombatAdapter extends RecyclerView.Adapter<CombatAdapter.CombatAdap
         } else {
             return 0;
         }
+    }
+
+    public ArrayList<CharacterType> getCharacterList() {
+        return characterList;
     }
 
     class CombatAdapterViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
@@ -197,7 +207,7 @@ public class CombatAdapter extends RecyclerView.Adapter<CombatAdapter.CombatAdap
         public void onClick(View v) {
 
             // All of the pressable elements have the character ID as a tag
-            int characterId = (Integer) v.getTag();
+            int position = (Integer) v.getTag();
             CombatClickListener.EventType eventType;
 
             if (v.getId() == R.id.ib_hp_minus_select) {
@@ -207,7 +217,7 @@ public class CombatAdapter extends RecyclerView.Adapter<CombatAdapter.CombatAdap
             } else {
                 eventType = ITEM_CLICK;
             }
-            clickListener.onCombatClick(characterId, eventType);
+            clickListener.onCombatClick(position, eventType);
         }
     }
 

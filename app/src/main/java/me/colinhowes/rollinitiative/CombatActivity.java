@@ -93,19 +93,36 @@ public class CombatActivity extends AppCompatActivity implements
             // Called when a user swipes left or right on a ViewHolder
             @Override
             public void onSwiped(RecyclerView.ViewHolder viewHolder, int swipeDir) {
-
-                // passed to database update functions
-                int characterId = (int) viewHolder.itemView.getTag();
+                characterList = combatAdapter.getCharacterList();
+                int position = (int) viewHolder.itemView.getTag();
+                CharacterType character = characterList.get(position);
 
                 if (swipeDir == ItemTouchHelper.LEFT) {
-                    CharacterDbHelper.toggleInCombat(db, characterId);
-                    restartLoader();
+                    character.setInCombat(0);
+                    characterList.remove(position);
+                    CharacterDbHelper.toggleInCombat(db, character.getId());
+                    combatAdapter.notifyDataSetChanged();
                 } else {
                     // editCharacter(characterId);
                 }
 
             }
         }).attachToRecyclerView(combatRecyclerView);
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        int turnOrder = 0;
+        characterList = combatAdapter.getCharacterList();
+
+        for (CharacterType character : characterList) {
+
+            character.setTurnOrder(turnOrder);
+            CharacterDbHelper.updateCharacter(db, character);
+
+            turnOrder++;
+        }
     }
 
     @Override
@@ -247,17 +264,20 @@ public class CombatActivity extends AppCompatActivity implements
     }
 
     @Override
-    public void onCombatClick(int characterId, EventType eventType) {
+    public void onCombatClick(int position, EventType eventType) {
+        characterList = combatAdapter.getCharacterList();
+        CharacterType character = characterList.get(position);
+
         switch (eventType) {
             case INCREASE_HEALTH:
-                CharacterDbHelper.updateHealth(db, characterId, true);
+                character.setHealth(character.getHpCurrent() + 1);
                 // we have to force the loader to fetch the data again
-                restartLoader();
+                combatAdapter.notifyItemChanged(position);
                 break;
             case DECREASE_HEALTH:
-                CharacterDbHelper.updateHealth(db, characterId, false);
+                character.setHealth(character.getHpCurrent() - 1);
                 // we have to force the loader to fetch the data again
-                restartLoader();
+                combatAdapter.notifyItemChanged(position);
                 break;
             case ITEM_CLICK:
                 // we have to force the loader to fetch the data again
