@@ -302,6 +302,7 @@ public class CombatActivity extends AppCompatActivity implements
         viewHolder= combatRecyclerView.findViewHolderForAdapterPosition(0);
         combatAdapter.setActiveCharacter(viewHolder, false);
         combatAdapter.swapCharacters(characterList.size() - 1, 0);
+        combatRecyclerView.scrollToPosition(0);
         viewHolder = combatRecyclerView.findViewHolderForAdapterPosition(0);
         combatAdapter.setActiveCharacter(viewHolder, true);
     }
@@ -312,6 +313,7 @@ public class CombatActivity extends AppCompatActivity implements
         combatAdapter.setActiveCharacter(viewHolder, false);
         combatAdapter.swapCharacters(0, characterList.size() - 1);
         viewHolder = combatRecyclerView.findViewHolderForAdapterPosition(0);
+        combatRecyclerView.scrollToPosition(0);
         combatAdapter.setActiveCharacter(viewHolder, true);
     }
 
