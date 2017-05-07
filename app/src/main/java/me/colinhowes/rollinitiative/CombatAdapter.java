@@ -1,7 +1,6 @@
 package me.colinhowes.rollinitiative;
 
 import android.content.Context;
-import android.database.Cursor;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -15,7 +14,6 @@ import android.widget.Toast;
 import java.util.ArrayList;
 import java.util.Collections;
 
-import me.colinhowes.rollinitiative.data.CharacterContract;
 import me.colinhowes.rollinitiative.data.CharacterType;
 
 import static me.colinhowes.rollinitiative.CombatAdapter.CombatClickListener.EventType.DECREASE_HEALTH;
@@ -30,12 +28,10 @@ public class CombatAdapter extends RecyclerView.Adapter<CombatAdapter.CombatAdap
 
     private ArrayList<CharacterType> characterList;
     final private CombatClickListener clickListener;
-    private Context context;
 
-    public CombatAdapter(Context context, ArrayList<CharacterType> characterList, CombatClickListener listener) {
+    public CombatAdapter(ArrayList<CharacterType> characterList, CombatClickListener listener) {
         this.characterList = characterList;
         this.clickListener = listener;
-        this.context = context;
     }
 
     public interface CombatClickListener {
@@ -126,6 +122,15 @@ public class CombatAdapter extends RecyclerView.Adapter<CombatAdapter.CombatAdap
                 break;
             case "Green":
                 holder.characterColour.setImageResource(R.drawable.circle_green);
+                break;
+            case "Purple":
+                holder.characterColour.setImageResource(R.drawable.circle_purple);
+                break;
+            case "Orange":
+                holder.characterColour.setImageResource(R.drawable.circle_orange);
+                break;
+            case "Brown":
+                holder.characterColour.setImageResource(R.drawable.circle_brown);
                 break;
             case "Black":
                 holder.characterColour.setImageResource(R.drawable.circle_black);

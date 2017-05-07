@@ -50,7 +50,7 @@ public class CombatActivity extends AppCompatActivity implements
         CharacterDbHelper dbHelper = new CharacterDbHelper(this);
         db = dbHelper.getWritableDatabase();
 
-        combatAdapter = new CombatAdapter(this, characterList, this);
+        combatAdapter = new CombatAdapter(characterList, this);
         combatRecyclerView.setAdapter(combatAdapter);
 
         /*
