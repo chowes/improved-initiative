@@ -70,18 +70,6 @@ public class CombatActivity extends AppCompatActivity implements
 
                 boolean moved = combatAdapter.swapCharacters(fromIndex, toIndex);
 
-                if (fromIndex == 0 && moved) {
-                    combatAdapter.setActiveCharacter(dragged, false);
-                    RecyclerView.ViewHolder activeCharacter = combatRecyclerView.
-                            findViewHolderForAdapterPosition(0);
-                    combatAdapter.setActiveCharacter(activeCharacter, true);
-                } else if (toIndex == 0 && moved) {
-                    combatAdapter.setActiveCharacter(target, false);
-                    RecyclerView.ViewHolder activeCharacter = combatRecyclerView.
-                            findViewHolderForAdapterPosition(0);
-                    combatAdapter.setActiveCharacter(activeCharacter, true);
-                }
-
                 return moved;
             }
 
@@ -298,23 +286,13 @@ public class CombatActivity extends AppCompatActivity implements
     }
 
     public void replayLastRound(MenuItem item) {
-        RecyclerView.ViewHolder viewHolder;
-        viewHolder= combatRecyclerView.findViewHolderForAdapterPosition(0);
-        combatAdapter.setActiveCharacter(viewHolder, false);
         combatAdapter.swapCharacters(characterList.size() - 1, 0);
         combatRecyclerView.scrollToPosition(0);
-        viewHolder = combatRecyclerView.findViewHolderForAdapterPosition(0);
-        combatAdapter.setActiveCharacter(viewHolder, true);
     }
 
     public void startNextRound(MenuItem item) {
-        RecyclerView.ViewHolder viewHolder;
-        viewHolder = combatRecyclerView.findViewHolderForAdapterPosition(0);
-        combatAdapter.setActiveCharacter(viewHolder, false);
         combatAdapter.swapCharacters(0, characterList.size() - 1);
-        viewHolder = combatRecyclerView.findViewHolderForAdapterPosition(0);
         combatRecyclerView.scrollToPosition(0);
-        combatAdapter.setActiveCharacter(viewHolder, true);
     }
 
 }

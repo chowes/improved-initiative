@@ -59,6 +59,7 @@ public class CombatAdapter extends RecyclerView.Adapter<CombatAdapter.CombatAdap
     }
 
     public boolean swapCharacters(int fromIndex, int toIndex) {
+
         if (characterList.isEmpty()) {
             return false;
         }
@@ -141,16 +142,13 @@ public class CombatAdapter extends RecyclerView.Adapter<CombatAdapter.CombatAdap
         }
 
         // Highlight the character if it is in combat
-        if (position == 0) {
-            setActiveCharacter(holder, true);
-        } else {
-            setActiveCharacter(holder, false);
-        }
+        setActiveCharacter(holder, false);
     }
 
     public void setActiveCharacter(RecyclerView.ViewHolder viewHolder, boolean isActive) {
         // Highlight the character if it is in combat
         if (viewHolder == null) {
+            Log.e("setActiveCharacter", "null viewHolder");
             return;
         }
         if (isActive) {
