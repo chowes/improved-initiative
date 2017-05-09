@@ -145,6 +145,10 @@ public class CombatAdapter extends RecyclerView.Adapter<CombatAdapter.CombatAdap
         setActiveCharacter(holder, false);
     }
 
+    /*
+     * TODO - Fix this and reimplement it
+     * Not currently used - getting an error on trying to update an offscreen viewholder
+     */
     public void setActiveCharacter(RecyclerView.ViewHolder viewHolder, boolean isActive) {
         // Highlight the character if it is in combat
         if (viewHolder == null) {
