@@ -9,10 +9,18 @@
     <string name="edit_characters">Edit Characters</string>
     <string name="about">About</string>
 
+    <!--Buttons-->
+    <string name="okay">Okay</string>
+    <string name="dismiss">Don\'t Show Again</string>
+
     <!--Combat Screen-->
     <string name="next_round">Next Turn</string>
     <string name="replay_round">Replay Turn</string>
     <string name="add_character">Characters</string>
+    <string name="combat_tutorial_swipe_left_label">Swipe left:</string>
+    <string name="combat_tutorial_swipe_left_text">Remove character from combat</string>
+    <string name="combat_tutorial_drag_label">Drag:</string>
+    <string name="combat_tutorial_drag_text">Reorder initiative</string>
 
     <!--Character Manager-->
 
@@ -33,6 +41,12 @@
     <string name="resume_encounter">Resume Combat</string>
     <string name="new_encounter">New Encounter</string>
     <string name="save_character">Save Character</string>
+    <string name="character_tutorial_swipe_left_label">Swipe left:</string>
+    <string name="character_tutorial_swipe_left_text">Delete a character</string>
+    <string name="character_tutorial_swipe_right_label">Swipe right:</string>
+    <string name="character_tutorial_swipe_right_text">Edit a character</string>
+    <string name="character_tutorial_click_label">Click:</string>
+    <string name="character_tutorial_click_text">Add character to combat</string>
 
     <string-array name="color_array">
         <item>Red</item>
