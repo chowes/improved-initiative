@@ -5,7 +5,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:padding="16dp">
+    android:padding="16dp"
+    android:paddingBottom="24dp" >
 
     <ImageView
         android:id="@+id/iv_color_select"
@@ -26,16 +27,9 @@
         app:layout_constraintLeft_toRightOf="@+id/iv_color_select"
         app:layout_constraintTop_toBottomOf="parent" />
 
-    <TextView
-        android:id="@+id/tv_hp_select"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textSize="18sp"
-        app:layout_constraintRight_toLeftOf="parent"
-        app:layout_constraintTop_toBottomOf="parent" />
-
     <ImageButton
         android:id="@+id/ib_hp_add_select"
+        android:contentDescription="@string/increment_health"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
@@ -43,10 +37,11 @@
         android:layout_marginStart="4dp"
         android:background="@color/transparent"
         app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/tv_hp_select"
-        android:src="@drawable/ic_add_circle_outline_black_24dp"/>
+        app:layout_constraintTop_toBottomOf="@id/tv_name_select"
+        android:src="@drawable/ic_add_circle_outline_black_36dp"/>
     <ImageButton
         android:id="@+id/ib_hp_minus_select"
+        android:contentDescription="@string/decrement_health"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
@@ -56,8 +51,16 @@
         android:layout_marginStart="4dp"
         android:background="@color/transparent"
         app:layout_constraintRight_toLeftOf="@id/ib_hp_add_select"
-        app:layout_constraintTop_toBottomOf="@id/tv_hp_select"
-        android:src="@drawable/ic_remove_circle_outline_black_24dp"/>
+        app:layout_constraintTop_toBottomOf="@id/tv_name_select"
+        android:src="@drawable/ic_remove_circle_outline_black_36dp"/>
+
+    <TextView
+        android:id="@+id/tv_hp_select"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="18sp"
+        app:layout_constraintLeft_toLeftOf="@id/ib_hp_minus_select"
+        app:layout_constraintBottom_toBottomOf="@id/tv_name_select" />
 
     <TextView
         android:id="@+id/tv_init_select"
@@ -66,14 +69,14 @@
         android:textSize="16sp"
         android:text="@string/edit_initiative"
         app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintBottom_toBottomOf="@id/ib_hp_minus_select" />
+        app:layout_constraintTop_toTopOf="@id/ib_hp_minus_select" />
 
     <TextView
         android:id="@+id/tv_init_bonus_select"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textSize="16sp"
-        android:paddingBottom="32dp"
+        android:paddingBottom="8dp"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintTop_toBottomOf="@id/tv_init_select" />
 

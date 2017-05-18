@@ -23,6 +23,8 @@
     <string name="okay">Okay</string>
     <string name="dismiss">Don\'t Show Again</string>
     <string name="report_bug">Report a Bug</string>
+    <string name="increment_health">Increment Health</string>
+    <string name="decrement_health">Decrement Health</string>
 
     <!--Combat Screen-->
     <string name="next_round">Next Turn</string>
