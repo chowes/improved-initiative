@@ -60,19 +60,33 @@ public class CombatAdapter extends RecyclerView.Adapter<CombatAdapter.CombatAdap
 
     public boolean swapCharacters(int fromIndex, int toIndex) {
 
+        CharacterType character;
+
         if (characterList.isEmpty()) {
             return false;
         }
         if (fromIndex < toIndex) {
             for (int i = fromIndex; i < toIndex; i++) {
-                Collections.swap(characterList, i, i + 1);
+                character = characterList.remove(i);
+                characterList.add(i + 1, character);
+                // this gives us the animation
+                notifyItemMoved(i, i + 1);
+                // we need these two calls or button presses will not work
+                notifyItemChanged(i);
+                notifyItemChanged(i + 1);
             }
         } else {
             for (int i = fromIndex; i > toIndex; i--) {
-                Collections.swap(characterList, i, i - 1);
+                character = characterList.remove(i);
+                characterList.add(i - 1, character);
+                // this gives us the animation
+                notifyItemMoved(i, i - 1);
+                // we need these two calls or button presses will not work
+                notifyItemChanged(i);
+                notifyItemChanged(i + 1);
             }
         }
-        notifyItemMoved(fromIndex, toIndex);
+
         return true;
     }
 

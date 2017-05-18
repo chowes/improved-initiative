@@ -67,8 +67,7 @@ public class CombatActivity extends AppCompatActivity implements
          * Swipe right - edit character
          */
         new ItemTouchHelper(new ItemTouchHelper.SimpleCallback(
-                ItemTouchHelper.UP | ItemTouchHelper.DOWN,
-                ItemTouchHelper.RIGHT | ItemTouchHelper.LEFT) {
+                ItemTouchHelper.UP | ItemTouchHelper.DOWN, ItemTouchHelper.LEFT) {
 
             @Override
             public boolean onMove(RecyclerView recyclerView,
