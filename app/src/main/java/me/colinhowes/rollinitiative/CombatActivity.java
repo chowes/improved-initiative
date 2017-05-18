@@ -81,6 +81,13 @@ public class CombatActivity extends AppCompatActivity implements
             }
 
             @Override
+            public void clearView(RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder) {
+                super.clearView(recyclerView, viewHolder);
+                int position = viewHolder.getAdapterPosition();
+                combatAdapter.notifyItemChanged(position);
+            }
+
+            @Override
             public boolean isLongPressDragEnabled() {
                 return true;
             }

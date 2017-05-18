@@ -3,7 +3,9 @@ package me.colinhowes.rollinitiative;
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
+import android.view.DragEvent;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
@@ -70,20 +72,16 @@ public class CombatAdapter extends RecyclerView.Adapter<CombatAdapter.CombatAdap
                 character = characterList.remove(i);
                 characterList.add(i + 1, character);
                 // this gives us the animation
-                notifyItemMoved(i, i + 1);
-                // we need these two calls or button presses will not work
-                notifyItemChanged(i);
                 notifyItemChanged(i + 1);
+                notifyItemMoved(i + 1, i);
             }
         } else {
             for (int i = fromIndex; i > toIndex; i--) {
                 character = characterList.remove(i);
                 characterList.add(i - 1, character);
                 // this gives us the animation
+                notifyItemChanged(i - 1);
                 notifyItemMoved(i, i - 1);
-                // we need these two calls or button presses will not work
-                notifyItemChanged(i);
-                notifyItemChanged(i + 1);
             }
         }
 
