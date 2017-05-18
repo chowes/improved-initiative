@@ -5,9 +5,11 @@
         android:icon="@drawable/ic_casino_black_48dp"
         android:orderInCategory="1"
         android:onClick="rollInitiative"/>
+
+    <!--TODO: Credit quill author in about-->
     <item
-        android:title="@string/add_character"
-        android:icon="@drawable/ic_add_circle_outline_black_48dp"
+        android:title="@string/save_character"
+        android:icon="@drawable/edit"
         android:orderInCategory="2"
         android:onClick="saveCharacter"/>
 </menu>

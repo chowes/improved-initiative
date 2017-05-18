@@ -2,32 +2,41 @@ package me.colinhowes.rollinitiative;
 
 import android.content.ContentValues;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.AsyncTaskLoader;
 import android.support.v4.content.Loader;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.helper.ItemTouchHelper;
 import android.util.Log;
+import android.view.LayoutInflater;
+import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Toast;
 
+import java.util.ArrayList;
+import java.util.Random;
+
 import me.colinhowes.rollinitiative.data.CharacterContract;
 import me.colinhowes.rollinitiative.data.CharacterDbHelper;
+import me.colinhowes.rollinitiative.data.CharacterType;
 
 public class CombatActivity extends AppCompatActivity implements
-        LoaderManager.LoaderCallbacks<Cursor>,
+        LoaderManager.LoaderCallbacks<ArrayList<CharacterType>>,
         CombatAdapter.CombatClickListener {
 
     private RecyclerView combatRecyclerView;
     private CombatAdapter combatAdapter;
-    private Cursor combatCursor;
+    private ArrayList<CharacterType> characterList;
     SQLiteDatabase db;
 
     @Override
@@ -39,6 +48,8 @@ public class CombatActivity extends AppCompatActivity implements
             this.getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         }
 
+        showInstructions();
+
         combatRecyclerView = (RecyclerView) findViewById(R.id.rv_turnorder);
         LinearLayoutManager layoutManager =
                 new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false);
@@ -47,7 +58,7 @@ public class CombatActivity extends AppCompatActivity implements
         CharacterDbHelper dbHelper = new CharacterDbHelper(this);
         db = dbHelper.getWritableDatabase();
 
-        combatAdapter = new CombatAdapter(this, combatCursor, this);
+        combatAdapter = new CombatAdapter(characterList, this);
         combatRecyclerView.setAdapter(combatAdapter);
 
         /*
@@ -55,29 +66,59 @@ public class CombatActivity extends AppCompatActivity implements
          * Swipe left - delete character
          * Swipe right - edit character
          */
-        new ItemTouchHelper(new ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.UP | ItemTouchHelper.DOWN | ItemTouchHelper.LEFT | ItemTouchHelper.RIGHT) {
+        new ItemTouchHelper(new ItemTouchHelper.SimpleCallback(
+                ItemTouchHelper.UP | ItemTouchHelper.DOWN,
+                ItemTouchHelper.RIGHT | ItemTouchHelper.LEFT) {
 
             @Override
-            public boolean onMove(RecyclerView recyclerView, RecyclerView.ViewHolder dragged, RecyclerView.ViewHolder target) {
-                return false;
+            public boolean onMove(RecyclerView recyclerView,
+                                  RecyclerView.ViewHolder dragged, RecyclerView.ViewHolder target) {
+                int fromIndex = dragged.getAdapterPosition();
+                int toIndex = target.getAdapterPosition();
+
+                boolean moved = combatAdapter.swapCharacters(fromIndex, toIndex);
+
+                return moved;
+            }
+
+            @Override
+            public boolean isLongPressDragEnabled() {
+                return true;
             }
 
             // Called when a user swipes left or right on a ViewHolder
             @Override
             public void onSwiped(RecyclerView.ViewHolder viewHolder, int swipeDir) {
-
-                // passed to database update functions
-                int characterId = (int) viewHolder.itemView.getTag();
+                characterList = combatAdapter.getCharacterList();
+                int position = (int) viewHolder.itemView.getTag();
+                CharacterType character = characterList.get(position);
 
                 if (swipeDir == ItemTouchHelper.LEFT) {
-                    CharacterDbHelper.toggleInCombat(db, characterId);
-                    restartLoader();
+                    character.setInCombat(0);
+                    characterList.remove(position);
+                    CharacterDbHelper.toggleInCombat(db, character.getId());
+                    combatAdapter.notifyDataSetChanged();
                 } else {
                     // editCharacter(characterId);
                 }
 
             }
         }).attachToRecyclerView(combatRecyclerView);
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        int turnOrder = 0;
+        characterList = combatAdapter.getCharacterList();
+
+        for (CharacterType character : characterList) {
+
+            character.setTurnOrder(turnOrder);
+            CharacterDbHelper.updateCharacter(db, character);
+
+            turnOrder++;
+        }
     }
 
     @Override
@@ -92,6 +133,64 @@ public class CombatActivity extends AppCompatActivity implements
         getSupportLoaderManager().restartLoader(0, null, this);
     }
 
+    private ArrayList<CharacterType> createCharacterList(Cursor cursor) {
+        ArrayList<CharacterType> characterList = new ArrayList<>(cursor.getCount());
+        CharacterType character;
+
+        if (!cursor.moveToFirst()) {
+            return characterList;
+        }
+
+        do {
+            int id = cursor.getInt(
+                    cursor.getColumnIndex(CharacterContract.CharacterEntry._ID));
+            String name = cursor.getString(
+                    cursor.getColumnIndex(CharacterContract.CharacterEntry.COLUMN_NAME_NAME));
+            int hpCurrent = cursor.getInt(
+                    cursor.getColumnIndex(CharacterContract.CharacterEntry.COLUMN_NAME_HP_CURRENT));
+            int hpTotal = cursor.getInt(
+                    cursor.getColumnIndex(CharacterContract.CharacterEntry.COLUMN_NAME_HP_TOTAL));
+            int initBonus = cursor.getInt(
+                    cursor.getColumnIndex(CharacterContract.CharacterEntry.COLUMN_NAME_INIT_BONUS));
+            int initScore = cursor.getInt(
+                    cursor.getColumnIndex(CharacterContract.CharacterEntry.COLUMN_NAME_INIT));
+            int turnOrder = cursor.getInt(
+                    cursor.getColumnIndex(CharacterContract.CharacterEntry.COLUMN_NAME_TURN_ORDER));
+            int inCombat = cursor.getInt(
+                    cursor.getColumnIndex(CharacterContract.CharacterEntry.COLUMN_NAME_IN_COMBAT));
+            String colour = cursor.getString(
+                    cursor.getColumnIndex(CharacterContract.CharacterEntry.COLUMN_NAME_COLOUR));
+
+            character = new CharacterType(id, name, colour, hpCurrent, hpTotal, initBonus, initScore,
+                    turnOrder, inCombat);
+
+            characterList.add(character);
+
+        } while (cursor.moveToNext());
+
+        return characterList;
+    }
+
+    public void getTurnOrder() {
+        Cursor cursor = CharacterDbHelper.getCombatants(db);
+        ContentValues values = new ContentValues();
+        int characterId;
+        int turnOrder = 0;
+
+        if (!cursor.moveToFirst()) {
+            return;
+        }
+
+        do {
+            characterId = cursor.getInt(cursor.getColumnIndex(
+                    CharacterContract.CharacterEntry._ID));
+            values.put(CharacterContract.CharacterEntry.COLUMN_NAME_TURN_ORDER, turnOrder);
+            CharacterDbHelper.updateCharacter(db, characterId, values);
+            turnOrder++;
+        } while (cursor.moveToNext());
+        cursor.close();
+    }
+
     @Override
     protected void onResume() {
         super.onResume();
@@ -102,10 +201,10 @@ public class CombatActivity extends AppCompatActivity implements
      * Get the character data asynchronously
      */
     @Override
-    public Loader<Cursor> onCreateLoader(int id, Bundle args) {
-        return new AsyncTaskLoader<Cursor>(this) {
+    public Loader<ArrayList<CharacterType>> onCreateLoader(int id, Bundle args) {
+        return new AsyncTaskLoader<ArrayList<CharacterType>>(this) {
 
-            Cursor newCharacterData = null;
+            ArrayList<CharacterType> newCharacterData = null;
 
             @Override
             protected void onStartLoading() {
@@ -114,16 +213,21 @@ public class CombatActivity extends AppCompatActivity implements
                     deliverResult(newCharacterData);
                 } else {
                     // Otherwise, load new data
+                    getTurnOrder();
                     forceLoad();
                 }
             }
 
             // load character data asynchronously
             @Override
-            public Cursor loadInBackground() {
+            public ArrayList<CharacterType> loadInBackground() {
+
+                Cursor cursor;
 
                 try {
-                    return CharacterDbHelper.getCombatants(db);
+                    cursor = CharacterDbHelper.getCombatants(db);
+                    return createCharacterList(cursor);
+
                 } catch (Exception e) {
                     Log.e("Load Error:", "Unable to load character data!");
                     e.printStackTrace();
@@ -131,8 +235,8 @@ public class CombatActivity extends AppCompatActivity implements
                 }
             }
 
-            public void deliverResult(Cursor data) {
-                combatCursor = data;
+            public void deliverResult(ArrayList<CharacterType> data) {
+                characterList = data;
                 super.deliverResult(data);
             }
         };
@@ -143,30 +247,33 @@ public class CombatActivity extends AppCompatActivity implements
      * Note that changeCursor closes the old cursor
      */
     @Override
-    public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
-        combatAdapter.changeCursor(data);
+    public void onLoadFinished(Loader<ArrayList<CharacterType>> loader, ArrayList<CharacterType> data) {
+        combatAdapter.changeList(data);
     }
 
     /*
      * Invalidate old cursor
      */
     @Override
-    public void onLoaderReset(Loader<Cursor> loader) {
-        combatAdapter.changeCursor(null);
+    public void onLoaderReset(Loader<ArrayList<CharacterType>> loader) {
+        combatAdapter.changeList(null);
     }
 
     @Override
-    public void onCombatClick(int characterId, EventType eventType) {
+    public void onCombatClick(int position, EventType eventType) {
+        characterList = combatAdapter.getCharacterList();
+        CharacterType character = characterList.get(position);
+
         switch (eventType) {
             case INCREASE_HEALTH:
-                CharacterDbHelper.updateHealth(db, characterId, true);
+                character.setHealth(character.getHpCurrent() + 1);
                 // we have to force the loader to fetch the data again
-                restartLoader();
+                combatAdapter.notifyItemChanged(position);
                 break;
             case DECREASE_HEALTH:
-                CharacterDbHelper.updateHealth(db, characterId, false);
+                character.setHealth(character.getHpCurrent() - 1);
                 // we have to force the loader to fetch the data again
-                restartLoader();
+                combatAdapter.notifyItemChanged(position);
                 break;
             case ITEM_CLICK:
                 // we have to force the loader to fetch the data again
@@ -187,13 +294,45 @@ public class CombatActivity extends AppCompatActivity implements
     }
 
     public void replayLastRound(MenuItem item) {
-        CharacterDbHelper.lastTurn(db);
-        restartLoader();
+        combatAdapter.swapCharacters(characterList.size() - 1, 0);
+        combatRecyclerView.scrollToPosition(0);
     }
 
     public void startNextRound(MenuItem item) {
-        CharacterDbHelper.nextTurn(db);
-        restartLoader();
+        combatAdapter.swapCharacters(0, characterList.size() - 1);
+        combatRecyclerView.scrollToPosition(0);
+    }
+
+    private void showInstructions() {
+
+        SharedPreferences sharedPref = this.getPreferences(Context.MODE_PRIVATE);
+        final String showAgainKey = getString(R.string.combat_tutorial_pref);
+        boolean showAgain = sharedPref.getBoolean(showAgainKey, true);
+
+        if (!showAgain) {
+            return;
+        }
+
+        final SharedPreferences.Editor prefEditor = sharedPref.edit();
+
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        LayoutInflater inflater = this.getLayoutInflater();
+        builder.setView(inflater.inflate(R.layout.combat_tutorial_dialog, null));
+        builder.setPositiveButton(R.string.okay, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int id) {
+                prefEditor.putBoolean(showAgainKey, true);
+                prefEditor.apply();
+            }
+        }).setNegativeButton(R.string.dismiss, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int id) {
+                prefEditor.putBoolean(showAgainKey, false);
+                prefEditor.apply();
+            }
+        });
+        AlertDialog alertDialog = builder.create();
+        alertDialog.show();
     }
 
 }

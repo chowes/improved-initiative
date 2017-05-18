@@ -3,36 +3,42 @@ package me.colinhowes.rollinitiative;
 import android.content.ClipData;
 import android.content.ContentValues;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.net.Uri;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.AsyncTaskLoader;
 import android.support.v4.content.Loader;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.helper.ItemTouchHelper;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Toast;
 
+import java.util.ArrayList;
 import java.util.Random;
 
 import me.colinhowes.rollinitiative.data.CharacterContract;
 import me.colinhowes.rollinitiative.data.CharacterDbHelper;
+import me.colinhowes.rollinitiative.data.CharacterType;
 
 public class CharacterActivity extends AppCompatActivity
-        implements LoaderManager.LoaderCallbacks<Cursor>,
+        implements LoaderManager.LoaderCallbacks<ArrayList<CharacterType>>,
         CharacterAdapter.CharacterClickListener {
 
     private RecyclerView characterRecyclerView;
     private CharacterAdapter characterAdapter;
-    private Cursor characterCursor;
+    private ArrayList<CharacterType> characterList;
     SQLiteDatabase db;
 
     @Override
@@ -44,6 +50,8 @@ public class CharacterActivity extends AppCompatActivity
             this.getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         }
 
+        showInstructions();
+
         characterRecyclerView = (RecyclerView) findViewById(R.id.rv_character_select);
         LinearLayoutManager layoutManager =
                 new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false);
@@ -52,7 +60,7 @@ public class CharacterActivity extends AppCompatActivity
         CharacterDbHelper dbHelper = new CharacterDbHelper(this);
         db = dbHelper.getWritableDatabase();
 
-        characterAdapter = new CharacterAdapter(this, characterCursor, this);
+        characterAdapter = new CharacterAdapter(characterList, this);
         characterRecyclerView.setAdapter(characterAdapter);
 
         /*
@@ -60,7 +68,8 @@ public class CharacterActivity extends AppCompatActivity
          * Swipe left - delete character
          * Swipe right - edit character
          */
-        new ItemTouchHelper(new ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.LEFT | ItemTouchHelper.RIGHT) {
+        new ItemTouchHelper(new ItemTouchHelper.SimpleCallback(0,
+                ItemTouchHelper.LEFT | ItemTouchHelper.RIGHT) {
 
             // we aren't using onMove here
             @Override
@@ -73,17 +82,56 @@ public class CharacterActivity extends AppCompatActivity
             public void onSwiped(RecyclerView.ViewHolder viewHolder, int swipeDir) {
 
                 // passed to database update functions
-                int characterId = (int) viewHolder.itemView.getTag();
+                int position = (int) viewHolder.itemView.getTag();
 
                 if (swipeDir == ItemTouchHelper.LEFT) {
-                    CharacterDbHelper.deleteCharacter(db, characterId);
-                    restartLoader();
-                } else {
-                    editCharacter(characterId);
+                    CharacterDbHelper.deleteCharacter(db, characterList.get(position).getId());
+                    characterList.remove(position);
+                    characterAdapter.notifyDataSetChanged();
+                } else if (swipeDir == ItemTouchHelper.RIGHT){
+                    editCharacter(characterList.get(position).getId());
                 }
 
             }
         }).attachToRecyclerView(characterRecyclerView);
+    }
+
+    private ArrayList<CharacterType> createCharacterList(Cursor cursor) {
+        ArrayList<CharacterType> characterList = new ArrayList<>(cursor.getCount());
+        CharacterType character;
+
+        if (!cursor.moveToFirst()) {
+            return characterList;
+        }
+
+        do {
+            int id = cursor.getInt(
+                    cursor.getColumnIndex(CharacterContract.CharacterEntry._ID));
+            String name = cursor.getString(
+                    cursor.getColumnIndex(CharacterContract.CharacterEntry.COLUMN_NAME_NAME));
+            int hpCurrent = cursor.getInt(
+                    cursor.getColumnIndex(CharacterContract.CharacterEntry.COLUMN_NAME_HP_CURRENT));
+            int hpTotal = cursor.getInt(
+                    cursor.getColumnIndex(CharacterContract.CharacterEntry.COLUMN_NAME_HP_TOTAL));
+            int initBonus = cursor.getInt(
+                    cursor.getColumnIndex(CharacterContract.CharacterEntry.COLUMN_NAME_INIT_BONUS));
+            int initScore = cursor.getInt(
+                    cursor.getColumnIndex(CharacterContract.CharacterEntry.COLUMN_NAME_INIT));
+            int turnOrder = cursor.getInt(
+                    cursor.getColumnIndex(CharacterContract.CharacterEntry.COLUMN_NAME_TURN_ORDER));
+            int inCombat = cursor.getInt(
+                    cursor.getColumnIndex(CharacterContract.CharacterEntry.COLUMN_NAME_IN_COMBAT));
+            String colour = cursor.getString(
+                    cursor.getColumnIndex(CharacterContract.CharacterEntry.COLUMN_NAME_COLOUR));
+
+            character = new CharacterType(id, name, colour, hpCurrent, hpTotal, initBonus, initScore,
+                    turnOrder, inCombat);
+
+            characterList.add(character);
+
+        } while (cursor.moveToNext());
+
+        return characterList;
     }
 
     @Override
@@ -146,6 +194,16 @@ public class CharacterActivity extends AppCompatActivity
     }
 
     @Override
+    protected void onPause() {
+        super.onPause();
+        characterList = characterAdapter.getCharacterList();
+
+        for (CharacterType character : characterList) {
+            CharacterDbHelper.updateCharacter(db, character);
+        }
+    }
+
+    @Override
     protected void onResume() {
         super.onResume();
 
@@ -156,10 +214,10 @@ public class CharacterActivity extends AppCompatActivity
      * Get the character data asynchronously
      */
     @Override
-    public Loader<Cursor> onCreateLoader(int id, Bundle args) {
-        return new AsyncTaskLoader<Cursor>(this) {
+    public Loader<ArrayList<CharacterType>> onCreateLoader(int id, Bundle args) {
+        return new AsyncTaskLoader<ArrayList<CharacterType>>(this) {
 
-            Cursor newCharacterData = null;
+            ArrayList<CharacterType> newCharacterData = null;
 
             @Override
             protected void onStartLoading() {
@@ -174,10 +232,14 @@ public class CharacterActivity extends AppCompatActivity
 
             // load character data asynchronously
             @Override
-            public Cursor loadInBackground() {
+            public ArrayList<CharacterType> loadInBackground() {
+
+                Cursor cursor;
 
                 try {
-                    return CharacterDbHelper.getCharacters(db);
+                    cursor = CharacterDbHelper.getCharacters(db);
+                    return createCharacterList(cursor);
+
                 } catch (Exception e) {
                     Log.e("Load Error:", "Unable to load character data!");
                     e.printStackTrace();
@@ -185,8 +247,8 @@ public class CharacterActivity extends AppCompatActivity
                 }
             }
 
-            public void deliverResult(Cursor data) {
-                characterCursor = data;
+            public void deliverResult(ArrayList<CharacterType> data) {
+                characterList = data;
                 super.deliverResult(data);
             }
         };
@@ -197,36 +259,44 @@ public class CharacterActivity extends AppCompatActivity
      * Note that changeCursor closes the old cursor
      */
     @Override
-    public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
-        characterAdapter.changeCursor(data);
+    public void onLoadFinished(Loader<ArrayList<CharacterType>> loader, ArrayList<CharacterType> data) {
+        characterAdapter.changeList(data);
     }
 
     /*
      * Invalidate old cursor
      */
     @Override
-    public void onLoaderReset(Loader<Cursor> loader) {
-        characterAdapter.changeCursor(null);
+    public void onLoaderReset(Loader<ArrayList<CharacterType>> loader) {
+        characterAdapter.changeList(null);
     }
 
     /*
      * Handles click events - dispatch to toggleInCombat
      */
     @Override
-    public void onCharacterClick(int characterId, EventType eventType) {
+    public void onCharacterClick(int position, EventType eventType) {
+        CharacterType character;
+        try {
+            character = characterList.get(position);
+        } catch (IndexOutOfBoundsException e) {
+            e.printStackTrace();
+            return;
+        }
+
         switch (eventType) {
             case INCREASE_HEALTH:
-                CharacterDbHelper.updateHealth(db, characterId, true);
+                CharacterDbHelper.updateHealth(db, character.getId(), true);
                 // we have to force the loader to fetch the data again
                 restartLoader();
                 break;
             case DECREASE_HEALTH:
-                CharacterDbHelper.updateHealth(db, characterId, false);
+                CharacterDbHelper.updateHealth(db, character.getId(), false);
                 // we have to force the loader to fetch the data again
                 restartLoader();
                 break;
             case ITEM_CLICK:
-                CharacterDbHelper.toggleInCombat(db, characterId);
+                CharacterDbHelper.toggleInCombat(db, character.getId());
                 // we have to force the loader to fetch the data again
                 restartLoader();
                 break;
@@ -236,7 +306,6 @@ public class CharacterActivity extends AppCompatActivity
     }
 
     public void rollInitiative(MenuItem menuItem) {
-        Toast.makeText(this, "Roll Initiative", Toast.LENGTH_SHORT).show();
         int id;
         int initBonus;
         int initRoll;
@@ -268,6 +337,7 @@ public class CharacterActivity extends AppCompatActivity
     public void startCombat(MenuItem menuItem) {
         Intent intent = new Intent(this, CombatActivity.class);
         getTurnOrder();
+        restartLoader();
         startActivity(intent);
         finish();
     }
@@ -276,5 +346,37 @@ public class CharacterActivity extends AppCompatActivity
         Intent intent = new Intent(this, CombatActivity.class);
         startActivity(intent);
         finish();
+    }
+
+    private void showInstructions() {
+
+        SharedPreferences sharedPref = this.getPreferences(Context.MODE_PRIVATE);
+        final String showAgainKey = getString(R.string.character_tutorial_pref);
+        boolean showAgain = sharedPref.getBoolean(showAgainKey, true);
+
+        if (!showAgain) {
+            return;
+        }
+
+        final SharedPreferences.Editor prefEditor = sharedPref.edit();
+
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        LayoutInflater inflater = this.getLayoutInflater();
+        builder.setView(inflater.inflate(R.layout.character_tutorial_dialog, null));
+        builder.setPositiveButton(R.string.okay, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int id) {
+                prefEditor.putBoolean(showAgainKey, true);
+                prefEditor.apply();
+            }
+        }).setNegativeButton(R.string.dismiss, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int id) {
+                prefEditor.putBoolean(showAgainKey, false);
+                prefEditor.apply();
+            }
+        });
+        AlertDialog alertDialog = builder.create();
+        alertDialog.show();
     }
 }

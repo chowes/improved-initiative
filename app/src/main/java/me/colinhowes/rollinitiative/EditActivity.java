@@ -131,19 +131,19 @@ public class EditActivity extends AppCompatActivity {
 
         // try to get character data from fields, on error we just assign a default
         if (name.isEmpty()) {
-            name = "John Doe";
+            name = "Sir Gygax";
         }
 
         try {
             hpCurrent = Integer.parseInt(hpCurrentField.getText().toString());
         } catch (NumberFormatException e) {
-            hpCurrent = 0;
+            hpCurrent = 8;
         }
 
         try {
             hpMax = Integer.parseInt(hpMaxField.getText().toString());
         } catch (NumberFormatException e) {
-            hpMax = 0;
+            hpMax = 8;
         }
 
         try {

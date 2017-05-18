@@ -7,11 +7,32 @@
     <!--Main Screen-->
     <string name="start_combat">Start Combat</string>
     <string name="edit_characters">Edit Characters</string>
+    <string name="about">About</string>
+    <string name="about_label">About Improved Initiative</string>
+    <string name="about_text">
+        Improved Initiative is a free open source initiative manager. If you\'ve found a bug, please report it to https://github.com/chowes/improved-initiative/issues
+    </string>
+    <string name="acknowledgements_label">Acknowledgements</string>
+    <string name="acknowledgements_text">
+        The Improved Initiative logo is based on a free font called Barbarian NS created by Anthony Robinson.
+        The quill \'save\' icon was created by Freepik from flaticon.com
+    </string>
+    <string name="thanks_label">Thanks for using Improved Initiative!</string>
+
+    <!--Buttons-->
+    <string name="okay">Okay</string>
+    <string name="dismiss">Don\'t Show Again</string>
+    <string name="report_bug">Report a Bug</string>
 
     <!--Combat Screen-->
     <string name="next_round">Next Turn</string>
     <string name="replay_round">Replay Turn</string>
     <string name="add_character">Characters</string>
+    <string name="combat_tutorial_pref">show_combat_instructions</string>
+    <string name="combat_tutorial_swipe_left_label">Swipe left:</string>
+    <string name="combat_tutorial_swipe_left_text">Remove character from combat</string>
+    <string name="combat_tutorial_drag_label">Drag:</string>
+    <string name="combat_tutorial_drag_text">Reorder initiative</string>
 
     <!--Character Manager-->
 
@@ -31,6 +52,14 @@
     <string name="roll_initiative">Roll Initiative</string>
     <string name="resume_encounter">Resume Combat</string>
     <string name="new_encounter">New Encounter</string>
+    <string name="save_character">Save Character</string>
+    <string name="character_tutorial_pref">show_char_instructions</string>
+    <string name="character_tutorial_swipe_left_label">Swipe left:</string>
+    <string name="character_tutorial_swipe_left_text">Delete a character</string>
+    <string name="character_tutorial_swipe_right_label">Swipe right:</string>
+    <string name="character_tutorial_swipe_right_text">Edit a character</string>
+    <string name="character_tutorial_click_label">Click:</string>
+    <string name="character_tutorial_click_text">Add character to combat</string>
 
     <string-array name="color_array">
         <item>Red</item>
