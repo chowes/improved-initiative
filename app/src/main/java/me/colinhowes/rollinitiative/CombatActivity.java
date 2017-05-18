@@ -4,6 +4,7 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.support.v4.app.LoaderManager;
@@ -17,11 +18,13 @@ import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.helper.ItemTouchHelper;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Toast;
 
 import java.util.ArrayList;
+import java.util.Random;
 
 import me.colinhowes.rollinitiative.data.CharacterContract;
 import me.colinhowes.rollinitiative.data.CharacterDbHelper;
@@ -44,6 +47,8 @@ public class CombatActivity extends AppCompatActivity implements
         if (getSupportActionBar() != null) {
             this.getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         }
+
+        showInstructions();
 
         combatRecyclerView = (RecyclerView) findViewById(R.id.rv_turnorder);
         LinearLayoutManager layoutManager =
@@ -99,23 +104,6 @@ public class CombatActivity extends AppCompatActivity implements
 
             }
         }).attachToRecyclerView(combatRecyclerView);
-
-        AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        LayoutInflater inflater = this.getLayoutInflater();
-        builder.setView(inflater.inflate(R.layout.combat_tutorial_dialog, null));
-        builder.setPositiveButton(R.string.okay, new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int id) {
-                Toast.makeText(getBaseContext(), "Okay", Toast.LENGTH_SHORT).show();
-            }
-        }).setNegativeButton(R.string.dismiss, new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int id) {
-                Toast.makeText(getBaseContext(), "Dismiss", Toast.LENGTH_SHORT).show();
-            }
-        });
-        AlertDialog alertDialog = builder.create();
-        alertDialog.show();
     }
 
     @Override
@@ -313,6 +301,38 @@ public class CombatActivity extends AppCompatActivity implements
     public void startNextRound(MenuItem item) {
         combatAdapter.swapCharacters(0, characterList.size() - 1);
         combatRecyclerView.scrollToPosition(0);
+    }
+
+    private void showInstructions() {
+
+        SharedPreferences sharedPref = this.getPreferences(Context.MODE_PRIVATE);
+        final String showAgainKey = getString(R.string.combat_tutorial_pref);
+        boolean showAgain = sharedPref.getBoolean(showAgainKey, true);
+
+        if (!showAgain) {
+            return;
+        }
+
+        final SharedPreferences.Editor prefEditor = sharedPref.edit();
+
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        LayoutInflater inflater = this.getLayoutInflater();
+        builder.setView(inflater.inflate(R.layout.combat_tutorial_dialog, null));
+        builder.setPositiveButton(R.string.okay, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int id) {
+                prefEditor.putBoolean(showAgainKey, true);
+                prefEditor.apply();
+            }
+        }).setNegativeButton(R.string.dismiss, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int id) {
+                prefEditor.putBoolean(showAgainKey, false);
+                prefEditor.apply();
+            }
+        });
+        AlertDialog alertDialog = builder.create();
+        alertDialog.show();
     }
 
 }

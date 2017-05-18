@@ -5,6 +5,7 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.net.Uri;
@@ -49,6 +50,8 @@ public class CharacterActivity extends AppCompatActivity
             this.getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         }
 
+        showInstructions();
+
         characterRecyclerView = (RecyclerView) findViewById(R.id.rv_character_select);
         LinearLayoutManager layoutManager =
                 new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false);
@@ -91,23 +94,6 @@ public class CharacterActivity extends AppCompatActivity
 
             }
         }).attachToRecyclerView(characterRecyclerView);
-
-        AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        LayoutInflater inflater = this.getLayoutInflater();
-        builder.setView(inflater.inflate(R.layout.character_tutorial_dialog, null));
-        builder.setPositiveButton(R.string.okay, new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int id) {
-                Toast.makeText(getBaseContext(), "Okay", Toast.LENGTH_SHORT).show();
-            }
-        }).setNegativeButton(R.string.dismiss, new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int id) {
-                Toast.makeText(getBaseContext(), "Dismiss", Toast.LENGTH_SHORT).show();
-            }
-        });
-        AlertDialog alertDialog = builder.create();
-        alertDialog.show();
     }
 
     private ArrayList<CharacterType> createCharacterList(Cursor cursor) {
@@ -320,7 +306,6 @@ public class CharacterActivity extends AppCompatActivity
     }
 
     public void rollInitiative(MenuItem menuItem) {
-        Toast.makeText(this, "Roll Initiative", Toast.LENGTH_SHORT).show();
         int id;
         int initBonus;
         int initRoll;
@@ -361,5 +346,37 @@ public class CharacterActivity extends AppCompatActivity
         Intent intent = new Intent(this, CombatActivity.class);
         startActivity(intent);
         finish();
+    }
+
+    private void showInstructions() {
+
+        SharedPreferences sharedPref = this.getPreferences(Context.MODE_PRIVATE);
+        final String showAgainKey = getString(R.string.character_tutorial_pref);
+        boolean showAgain = sharedPref.getBoolean(showAgainKey, true);
+
+        if (!showAgain) {
+            return;
+        }
+
+        final SharedPreferences.Editor prefEditor = sharedPref.edit();
+
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        LayoutInflater inflater = this.getLayoutInflater();
+        builder.setView(inflater.inflate(R.layout.character_tutorial_dialog, null));
+        builder.setPositiveButton(R.string.okay, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int id) {
+                prefEditor.putBoolean(showAgainKey, true);
+                prefEditor.apply();
+            }
+        }).setNegativeButton(R.string.dismiss, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int id) {
+                prefEditor.putBoolean(showAgainKey, false);
+                prefEditor.apply();
+            }
+        });
+        AlertDialog alertDialog = builder.create();
+        alertDialog.show();
     }
 }

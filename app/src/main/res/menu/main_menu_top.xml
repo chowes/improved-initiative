@@ -4,5 +4,6 @@
     <item
         android:title="@string/about"
         android:orderInCategory="100"
+        app:showAsAction="ifRoom"
         android:onClick="showAbout"/>
 </menu>
