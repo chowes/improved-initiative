@@ -83,7 +83,7 @@ public class CombatAdapter extends RecyclerView.Adapter<CombatAdapter.CombatAdap
                 notifyItemMoved(i, i - 1);
                 // we need these two calls or button presses will not work
                 notifyItemChanged(i);
-                notifyItemChanged(i + 1);
+                notifyItemChanged(i - 1);
             }
         }
 
