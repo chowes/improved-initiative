@@ -197,6 +197,7 @@ public class EditActivity extends AppCompatActivity {
         }
         initRoll = initRandom.nextInt(20) + 1;
         initRoll += initBonus;
+        initRoll = initRoll > 999 ? 999 : initRoll;
         initString = String.valueOf(initRoll);
         initField.setText(initString);
     }
