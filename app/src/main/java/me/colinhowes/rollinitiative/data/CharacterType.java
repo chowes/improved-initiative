@@ -90,7 +90,7 @@ public class CharacterType {
     }
 
     public void setInCombat(int inCombat) {
-        this.hpCurrent = inCombat;
+        this.inCombat = inCombat;
     }
 
     public void setTurnOrder(int turnOrder) {

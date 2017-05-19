@@ -9,8 +9,8 @@ android {
         applicationId "me.colinhowes.rollinitiative"
         minSdkVersion 15
         targetSdkVersion 25
-        versionCode 3
-        versionName "cockatrice"
+        versionCode 6
+        versionName "frost giant"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
     }
     buildTypes {

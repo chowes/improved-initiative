@@ -299,9 +299,12 @@ public class CharacterActivity extends AppCompatActivity
                 characterAdapter.notifyItemChanged(position);
                 break;
             case ITEM_CLICK:
-                CharacterDbHelper.toggleInCombat(db, character.getId());
-                // we have to force the loader to fetch the data again
-                characterAdapter.notifyDataSetChanged();
+                if (character.getInCombat() == 1) {
+                    character.setInCombat(0);
+                } else {
+                    character.setInCombat(1);
+                }
+                characterAdapter.notifyItemChanged(position);
                 break;
             default:
                 break;
