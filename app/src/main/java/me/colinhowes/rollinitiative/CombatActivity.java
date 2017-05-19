@@ -75,16 +75,7 @@ public class CombatActivity extends AppCompatActivity implements
                 int fromIndex = dragged.getAdapterPosition();
                 int toIndex = target.getAdapterPosition();
 
-                boolean moved = combatAdapter.swapCharacters(fromIndex, toIndex);
-
-                return moved;
-            }
-
-            @Override
-            public void clearView(RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder) {
-                super.clearView(recyclerView, viewHolder);
-                int position = viewHolder.getAdapterPosition();
-                combatAdapter.notifyItemChanged(position);
+                return combatAdapter.swapCharacters(fromIndex, toIndex);
             }
 
             @Override
@@ -105,7 +96,9 @@ public class CombatActivity extends AppCompatActivity implements
                     CharacterDbHelper.toggleInCombat(db, character.getId());
                     combatAdapter.notifyDataSetChanged();
                 } else {
-                    // editCharacter(characterId);
+                    /*
+                     * TODO: implement swipe-right-to-edit here
+                     */
                 }
 
             }
@@ -282,9 +275,6 @@ public class CombatActivity extends AppCompatActivity implements
                 combatAdapter.notifyItemChanged(position);
                 break;
             case ITEM_CLICK:
-                // we have to force the loader to fetch the data again
-                // restartLoader();
-                break;
             default:
                 break;
         }

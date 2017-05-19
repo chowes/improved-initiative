@@ -72,17 +72,17 @@ public class CombatAdapter extends RecyclerView.Adapter<CombatAdapter.CombatAdap
                 character = characterList.remove(i);
                 characterList.add(i + 1, character);
                 // this gives us the animation
-                notifyItemChanged(i + 1);
-                notifyItemMoved(i + 1, i);
+                notifyItemMoved(i, i + 1);
             }
+            notifyItemRangeChanged(fromIndex, toIndex - fromIndex + 1);
         } else {
             for (int i = fromIndex; i > toIndex; i--) {
                 character = characterList.remove(i);
                 characterList.add(i - 1, character);
                 // this gives us the animation
-                notifyItemChanged(i - 1);
                 notifyItemMoved(i, i - 1);
             }
+            notifyItemRangeChanged(toIndex, fromIndex - toIndex + 1);
         }
 
         return true;
