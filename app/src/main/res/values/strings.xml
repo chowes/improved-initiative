@@ -36,18 +36,25 @@
     <string name="combat_tutorial_drag_label">Drag:</string>
     <string name="combat_tutorial_drag_text">Reorder initiative</string>
 
+    <!--Character Item-->
+    <string name="char_hp">HP: %1$d/%2$d</string>
+    <string name="char_init_bonus">Bonus: %d</string>
+    <string name="char_init_score">Score: %d</string>
+    <string name="char_initiative">Initiative:</string>
+
     <!--Character Manager-->
 
     <!--Edit Character-->
     <string name="edit_title">Edit Character</string>
     <string name="create_character">Create Character</string>
     <string name="edit_name">Name:</string>
-    <string name="edit_hp">HP:</string>
+    <string name="edit_hp">HP: </string>
     <string name="edit_hp_max">Max</string>
     <string name="edit_hp_current">Current</string>
     <string name="edit_colour">Colour: </string>
-    <string name="edit_init_bonus">Bonus:</string>
     <string name="edit_initiative">Initiative:</string>
+    <string name="edit_init_bonus">Bonus:</string>
+    <string name="edit_init_score">Score:</string>
     <string name="edit_conditions">Condition:</string>
     <string name="edit_in_combat">In Combat:</string>
     <string name="slash">/</string>
@@ -70,6 +77,7 @@
         <item>Yellow</item>
         <item>Black</item>
     </string-array>
+    <string name="colour_img">Colour</string>
 
     <!--Testing-->
     <string name="test_name">Beatrix the Bold</string>

@@ -84,6 +84,8 @@ public class CharacterType {
     }
 
     public void setHealth(int health) {
+        health = health > 999 ? 999 : health;
+        health = health < -99 ? -99 : health;
         this.hpCurrent = health;
     }
 

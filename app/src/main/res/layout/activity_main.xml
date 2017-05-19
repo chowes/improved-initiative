@@ -8,33 +8,53 @@
     tools:context="me.colinhowes.rollinitiative.MainActivity">
 
     <ImageView
-        android:id="@+id/logo_text"
+        android:contentDescription="@string/app_name"
+        android:id="@+id/logo"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:paddingLeft="16dp"
         android:paddingRight="16dp"
-        app:srcCompat="@drawable/logo3"
-        app:layout_constraintLeft_toRightOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
-    <Button
-        android:id="@+id/combat_button"
-        android:background="@color/colorPrimaryDark"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:paddingTop="24dp"
-        android:paddingBottom="24dp"
-        android:paddingLeft="32dp"
-        android:paddingRight="32dp"
-        android:layout_marginBottom="16dp"
+        android:paddingTop="96dp"
+        android:scaleType="centerInside"
+        android:adjustViewBounds="true"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintBottom_toTopOf="parent"
-        android:text="@string/start_combat"
-        android:textSize="24sp"
-        android:textColor="@color/colorPrimaryLight"
-        android:layout_marginStart="16dp"
-        android:layout_marginEnd="16dp"
-        android:onClick="startButtonActivity"/>
+        app:layout_constraintTop_toTopOf="parent"
+        android:background="@color/transparent"
+        android:src="@drawable/logo" />
+
+    <ImageButton
+        android:id="@+id/combat_button"
+        android:contentDescription="@string/start_combat"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:paddingLeft="64dp"
+        android:paddingRight="64dp"
+        android:layout_marginBottom="64dp"
+        android:scaleType="centerInside"
+        android:adjustViewBounds="true"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        android:background="@color/transparent"
+        android:src="@drawable/combat_button"
+        android:onClick="startButtonActivity" />
+
+    <ImageButton
+        android:id="@+id/character_button"
+        android:contentDescription="@string/edit_characters"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:paddingLeft="64dp"
+        android:paddingRight="64dp"
+        android:layout_marginBottom="32dp"
+        android:scaleType="centerInside"
+        android:adjustViewBounds="true"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintBottom_toTopOf="@id/combat_button"
+        android:background="@color/transparent"
+        android:src="@drawable/character_button"
+        android:onClick="startButtonActivity" />
 
 </android.support.constraint.ConstraintLayout>

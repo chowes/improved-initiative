@@ -137,7 +137,10 @@ public class CharacterActivity extends AppCompatActivity
     @Override
     public void onBackPressed() {
         super.onBackPressed();
-        resumeCombat(null);
+
+        Intent intent = new Intent(this, MainActivity.class);
+        startActivity(intent);
+        finish();
     }
 
     @Override
@@ -286,19 +289,19 @@ public class CharacterActivity extends AppCompatActivity
 
         switch (eventType) {
             case INCREASE_HEALTH:
-                CharacterDbHelper.updateHealth(db, character.getId(), true);
+                character.setHealth(character.getHpCurrent() + 1);
                 // we have to force the loader to fetch the data again
-                restartLoader();
+                characterAdapter.notifyItemChanged(position);
                 break;
             case DECREASE_HEALTH:
-                CharacterDbHelper.updateHealth(db, character.getId(), false);
+                character.setHealth(character.getHpCurrent() - 1);
                 // we have to force the loader to fetch the data again
-                restartLoader();
+                characterAdapter.notifyItemChanged(position);
                 break;
             case ITEM_CLICK:
                 CharacterDbHelper.toggleInCombat(db, character.getId());
                 // we have to force the loader to fetch the data again
-                restartLoader();
+                characterAdapter.notifyDataSetChanged();
                 break;
             default:
                 break;
@@ -324,6 +327,8 @@ public class CharacterActivity extends AppCompatActivity
 
             initRoll = initRandom.nextInt(20) + 1;
             initRoll += initBonus;
+            initRoll = initRoll > 999 ? 999 : initRoll;
+            initRoll = initRoll < -99 ? -99 : initRoll;
             values.put(CharacterContract.CharacterEntry.COLUMN_NAME_INIT,
                     String.valueOf(initRoll));
 

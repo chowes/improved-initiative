@@ -29,7 +29,7 @@
         </activity>
         <activity android:name=".CharacterActivity"
             android:label="@string/choose_character_name"
-            android:parentActivityName=".CombatActivity">
+            android:parentActivityName=".MainActivity">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value=".CombatActivity" />

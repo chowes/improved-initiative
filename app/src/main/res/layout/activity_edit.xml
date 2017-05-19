@@ -35,6 +35,7 @@
                 android:layout_weight="1.5"
                 android:textSize="18sp"
                 android:inputType="text"
+                android:maxLength="20"
                 android:textColor="@color/black" />
         </LinearLayout>
 
@@ -58,7 +59,8 @@
                 android:layout_height="wrap_content"
                 android:layout_weight=".7"
                 android:textSize="18sp"
-                android:inputType="number"
+                android:inputType="number|numberSigned"
+                android:maxLength="3"
                 android:textColor="@color/black"
                 android:hint="@string/edit_hp_current" />
             <TextView
@@ -73,7 +75,8 @@
                 android:layout_height="wrap_content"
                 android:layout_weight=".7"
                 android:textSize="18sp"
-                android:inputType="number"
+                android:inputType="number|numberSigned"
+                android:maxLength="3"
                 android:hint="@string/edit_hp_max"
                 android:textColor="@color/black" />
         </LinearLayout>
@@ -100,6 +103,7 @@
                 android:textSize="18sp"
                 android:inputType="number"
                 android:hint="@string/edit_init_bonus"
+                android:maxLength="3"
                 android:textColor="@color/black" />
             <EditText
                 android:id="@+id/et_init"
@@ -109,6 +113,7 @@
                 android:textSize="18sp"
                 android:inputType="number"
                 android:hint="@string/edit_initiative"
+                android:maxLength="3"
                 android:textColor="@color/black" />
         </LinearLayout>
 

@@ -117,10 +117,12 @@ public class CombatAdapter extends RecyclerView.Adapter<CombatAdapter.CombatAdap
 
         // TODO: Should be using string resources here, fix this.
         holder.characterName.setText(character.getName());
-        holder.characterHitPoints.setText("HP: " + character.getHpCurrent()+ "/" +
-                character.getHpTotal());
-        holder.characterInitBonus.setText("Bonus: " + character.getInitBonus());
-        holder.characterInitScore.setText("Score: " + character.getInit());
+        holder.characterHitPoints.setText(holder.itemView.getResources().
+                getString(R.string.char_hp, character.getHpCurrent(), character.getHpTotal()));
+        holder.characterInitBonus.setText(holder.itemView.getResources().
+                getString(R.string.char_init_bonus, character.getInitBonus()));
+        holder.characterInitScore.setText(holder.itemView.getResources().
+                getString(R.string.char_init_score, character.getInit()));
 
         // Set the colour - consider changing drawable to something that can be coloured dynamically
         switch (character.getColour()) {

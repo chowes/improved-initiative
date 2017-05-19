@@ -260,8 +260,13 @@ public class CombatActivity extends AppCompatActivity implements
 
     @Override
     public void onCombatClick(int position, EventType eventType) {
-        characterList = combatAdapter.getCharacterList();
-        CharacterType character = characterList.get(position);
+        CharacterType character;
+        try {
+            character = characterList.get(position);
+        } catch (IndexOutOfBoundsException e) {
+            e.printStackTrace();
+            return;
+        }
 
         switch (eventType) {
             case INCREASE_HEALTH:
