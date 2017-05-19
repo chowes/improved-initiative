@@ -106,6 +106,14 @@ public class CombatActivity extends AppCompatActivity implements
     }
 
     @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+
+        // Inflate the top menu
+        getMenuInflater().inflate(R.menu.combat_menu_top, menu);
+        return true;
+    }
+
+    @Override
     protected void onPause() {
         super.onPause();
         int turnOrder = 0;
@@ -302,6 +310,16 @@ public class CombatActivity extends AppCompatActivity implements
     public void startNextRound(MenuItem item) {
         combatAdapter.swapCharacters(0, characterList.size() - 1);
         combatRecyclerView.scrollToPosition(0);
+    }
+
+    public void showInstructions(MenuItem menuItem) {
+        SharedPreferences sharedPref = this.getPreferences(Context.MODE_PRIVATE);
+        final String showAgainKey = getString(R.string.combat_tutorial_pref);
+        final SharedPreferences.Editor prefEditor = sharedPref.edit();
+        prefEditor.putBoolean(showAgainKey, true);
+        prefEditor.apply();
+
+        showInstructions();
     }
 
     private void showInstructions() {

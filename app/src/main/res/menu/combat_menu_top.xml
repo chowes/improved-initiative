@@ -2,8 +2,8 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
     <item
-        android:title="@string/about"
-        android:orderInCategory="100"
+        android:title="@string/show_instructions"
         app:showAsAction="never"
-        android:onClick="showAbout"/>
+        android:orderInCategory="200"
+        android:onClick="showInstructions"/>
 </menu>

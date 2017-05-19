@@ -3,6 +3,8 @@
     <string name="combat_name">Improved Initiative</string>
     <string name="edit_character_name">Create a new Character</string>
     <string name="choose_character_name">Manage Characters</string>
+    <string name="instructions">Instructions</string>
+    <string name="show_instructions">Show Instructions</string>
 
     <!--Main Screen-->
     <string name="start_combat">Start Combat</string>

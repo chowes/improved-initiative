@@ -1,6 +1,5 @@
 package me.colinhowes.rollinitiative;
 
-import android.content.ClipData;
 import android.content.ContentValues;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -8,7 +7,6 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
-import android.net.Uri;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.AsyncTaskLoader;
 import android.support.v4.content.Loader;
@@ -22,8 +20,6 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
-import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.Random;
@@ -147,7 +143,7 @@ public class CharacterActivity extends AppCompatActivity
     public boolean onCreateOptionsMenu(Menu menu) {
 
         // Inflate the top menu
-        getMenuInflater().inflate(R.menu.character_top, menu);
+        getMenuInflater().inflate(R.menu.character_menu_top, menu);
         return true;
     }
 
@@ -354,6 +350,16 @@ public class CharacterActivity extends AppCompatActivity
         Intent intent = new Intent(this, CombatActivity.class);
         startActivity(intent);
         finish();
+    }
+
+    public void showInstructions(MenuItem menuItem) {
+        SharedPreferences sharedPref = this.getPreferences(Context.MODE_PRIVATE);
+        final String showAgainKey = getString(R.string.character_tutorial_pref);
+        final SharedPreferences.Editor prefEditor = sharedPref.edit();
+        prefEditor.putBoolean(showAgainKey, true);
+        prefEditor.apply();
+
+        showInstructions();
     }
 
     private void showInstructions() {
