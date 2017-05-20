@@ -22,9 +22,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_alignParentBottom="true"
-        android:padding="32dp"
-        android:layout_marginLeft="128dp"
-        android:layout_marginRight="128dp">
+        android:paddingBottom="32dp">
         <ImageButton
             android:id="@+id/combat_button"
             android:contentDescription="@string/start_combat"

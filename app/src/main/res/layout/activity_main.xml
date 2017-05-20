@@ -14,7 +14,7 @@
         android:layout_height="wrap_content"
         android:layout_centerHorizontal="true"
         android:layout_alignParentTop="true"
-        android:padding="16dp"
+        android:paddingTop="16dp"
         android:background="@color/transparent"
         android:src="@drawable/logo" />
 
@@ -22,7 +22,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_alignParentBottom="true"
-        android:padding="64dp">
+        android:paddingBottom="64dp">
         <ImageButton
             android:id="@+id/combat_button"
             android:contentDescription="@string/start_combat"

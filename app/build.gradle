@@ -9,8 +9,8 @@ android {
         applicationId "me.colinhowes.rollinitiative"
         minSdkVersion 15
         targetSdkVersion 25
-        versionCode 8
-        versionName "hobgoblin"
+        versionCode 9
+        versionName "iron golem"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
     }
     buildTypes {
