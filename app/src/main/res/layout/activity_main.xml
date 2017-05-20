@@ -14,7 +14,7 @@
         android:layout_height="wrap_content"
         android:layout_centerHorizontal="true"
         android:layout_alignParentTop="true"
-        android:paddingTop="16dp"
+        android:paddingTop="64dp"
         android:background="@color/transparent"
         android:src="@drawable/logo" />
 
