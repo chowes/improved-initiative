@@ -14,9 +14,7 @@
         android:layout_height="wrap_content"
         android:layout_centerHorizontal="true"
         android:layout_alignParentTop="true"
-        android:padding="16dp"
-        android:scaleType="centerInside"
-        android:adjustViewBounds="true"
+        android:paddingTop="64dp"
         android:background="@color/transparent"
         android:src="@drawable/logo_land" />
 
@@ -33,8 +31,6 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerHorizontal="true"
-            android:scaleType="fitCenter"
-            android:adjustViewBounds="true"
             android:layout_alignParentBottom="true"
             android:background="@color/transparent"
             android:src="@drawable/combat_button"
@@ -47,8 +43,6 @@
             android:layout_height="wrap_content"
             android:layout_centerHorizontal="true"
             android:layout_marginBottom="64dp"
-            android:scaleType="centerInside"
-            android:adjustViewBounds="true"
             android:layout_alignBottom="@id/combat_button"
             android:background="@color/transparent"
             android:src="@drawable/character_button"
