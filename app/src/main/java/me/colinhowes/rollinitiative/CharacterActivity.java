@@ -173,6 +173,12 @@ public class CharacterActivity extends AppCompatActivity
     }
 
     public void getTurnOrder() {
+
+        // need to update new values
+        for (CharacterType character : characterList) {
+            CharacterDbHelper.updateCharacter(db, character);
+        }
+
         Cursor cursor = CharacterDbHelper.getCombatantsByInit(db);
         ContentValues values = new ContentValues();
         int characterId;
@@ -190,6 +196,8 @@ public class CharacterActivity extends AppCompatActivity
             turnOrder++;
         } while (cursor.moveToNext());
         cursor.close();
+
+        restartLoader();
     }
 
     @Override
@@ -197,6 +205,9 @@ public class CharacterActivity extends AppCompatActivity
         super.onPause();
         characterList = characterAdapter.getCharacterList();
 
+        if (characterList == null) {
+            return;
+        }
         for (CharacterType character : characterList) {
             CharacterDbHelper.updateCharacter(db, character);
         }
@@ -341,7 +352,6 @@ public class CharacterActivity extends AppCompatActivity
     public void startCombat(MenuItem menuItem) {
         Intent intent = new Intent(this, CombatActivity.class);
         getTurnOrder();
-        restartLoader();
         startActivity(intent);
         finish();
     }

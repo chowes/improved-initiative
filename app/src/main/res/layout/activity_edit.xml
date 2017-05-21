@@ -35,7 +35,9 @@
                 android:layout_weight="1.5"
                 android:textSize="18sp"
                 android:inputType="text"
-                android:maxLength="20"
+                android:maxLength="100"
+                android:imeOptions="actionNext"
+                android:nextFocusForward="@+id/et_hp_current"
                 android:textColor="@color/black" />
         </LinearLayout>
 
@@ -62,6 +64,8 @@
                 android:inputType="number|numberSigned"
                 android:maxLength="3"
                 android:textColor="@color/black"
+                android:imeOptions="actionNext"
+                android:nextFocusForward="@+id/et_hp_max"
                 android:hint="@string/edit_hp_current" />
             <TextView
                 android:layout_width="0dp"
@@ -78,6 +82,8 @@
                 android:inputType="number|numberSigned"
                 android:maxLength="3"
                 android:hint="@string/edit_hp_max"
+                android:imeOptions="actionNext"
+                android:nextFocusForward="@+id/et_init_bonus"
                 android:textColor="@color/black" />
         </LinearLayout>
 
@@ -104,7 +110,9 @@
                 android:inputType="number"
                 android:hint="@string/edit_init_bonus"
                 android:maxLength="3"
-                android:textColor="@color/black" />
+                android:textColor="@color/black"
+                android:imeOptions="actionNext"
+                android:nextFocusForward="@+id/et_init" />
             <EditText
                 android:id="@+id/et_init"
                 android:layout_width="0dp"
@@ -114,7 +122,8 @@
                 android:inputType="number"
                 android:hint="@string/edit_initiative"
                 android:maxLength="3"
-                android:textColor="@color/black" />
+                android:textColor="@color/black"
+                android:imeOptions="actionDone"/>
         </LinearLayout>
 
         <LinearLayout
@@ -130,12 +139,12 @@
                 android:layout_weight="1"
                 android:textSize="18sp"
                 android:text="@string/edit_in_combat"
-                android:textColor="@color/black" />
+                android:textColor="@color/black"/>
 
             <CheckBox
                 android:id="@+id/cb_in_combat"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content" />
+                android:layout_height="wrap_content"/>
         </LinearLayout>
 
         <LinearLayout
@@ -161,7 +170,7 @@
                 android:layout_weight="1.5"
                 android:textSize="18sp"
                 android:inputType="text"
-                android:textColor="@color/black" />
+                android:textColor="@color/black"/>
         </LinearLayout>
 
     </LinearLayout>

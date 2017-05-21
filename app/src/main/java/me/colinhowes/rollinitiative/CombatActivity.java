@@ -119,6 +119,10 @@ public class CombatActivity extends AppCompatActivity implements
         int turnOrder = 0;
         characterList = combatAdapter.getCharacterList();
 
+        if (characterList == null) {
+            return;
+        }
+
         for (CharacterType character : characterList) {
 
             character.setTurnOrder(turnOrder);
