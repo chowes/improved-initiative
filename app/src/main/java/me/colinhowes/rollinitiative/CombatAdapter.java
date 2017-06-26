@@ -18,6 +18,9 @@ import java.util.Collections;
 
 import me.colinhowes.rollinitiative.data.CharacterType;
 
+import static me.colinhowes.rollinitiative.CombatAdapter.CharacterStatus.ACTIVE;
+import static me.colinhowes.rollinitiative.CombatAdapter.CharacterStatus.DELAY;
+import static me.colinhowes.rollinitiative.CombatAdapter.CharacterStatus.INACTIVE;
 import static me.colinhowes.rollinitiative.CombatAdapter.CombatClickListener.EventType.DECREASE_HEALTH;
 import static me.colinhowes.rollinitiative.CombatAdapter.CombatClickListener.EventType.INCREASE_HEALTH;
 import static me.colinhowes.rollinitiative.CombatAdapter.CombatClickListener.EventType.ITEM_CLICK;
@@ -31,10 +34,19 @@ public class CombatAdapter extends RecyclerView.Adapter<CombatAdapter.CombatAdap
     private ArrayList<CharacterType> characterList;
     final private CombatClickListener clickListener;
 
+
+    enum CharacterStatus {
+        ACTIVE,
+        INACTIVE,
+        DELAY
+    }
+
+
     public CombatAdapter(ArrayList<CharacterType> characterList, CombatClickListener listener) {
         this.characterList = characterList;
         this.clickListener = listener;
     }
+
 
     public interface CombatClickListener {
         enum EventType {
@@ -44,6 +56,7 @@ public class CombatAdapter extends RecyclerView.Adapter<CombatAdapter.CombatAdap
         }
         void onCombatClick(int position, EventType eventType);
     }
+
 
     public ArrayList<CharacterType> changeList(ArrayList<CharacterType> newList) {
         if (characterList == newList) {
@@ -59,6 +72,7 @@ public class CombatAdapter extends RecyclerView.Adapter<CombatAdapter.CombatAdap
 
         return temp;
     }
+
 
     public boolean swapCharacters(int fromIndex, int toIndex) {
 
@@ -88,6 +102,7 @@ public class CombatAdapter extends RecyclerView.Adapter<CombatAdapter.CombatAdap
         return true;
     }
 
+
     @Override
     public CombatAdapterViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         Context context = parent.getContext();
@@ -97,6 +112,7 @@ public class CombatAdapter extends RecyclerView.Adapter<CombatAdapter.CombatAdap
         View view = inflater.inflate(id, parent, false);
         return new CombatAdapterViewHolder(view);
     }
+
 
     @Override
     public void onBindViewHolder(CombatAdapterViewHolder holder, int position) {
@@ -156,28 +172,40 @@ public class CombatAdapter extends RecyclerView.Adapter<CombatAdapter.CombatAdap
         }
 
         // Highlight the character if it is in combat
-        setActiveCharacter(holder, false);
+        if (position == 0) {
+            character.setDelayTurn(0);
+            setActiveCharacter(holder, ACTIVE);
+        } else if (character.getDelayTurn() == 1) {
+            setActiveCharacter(holder, DELAY);
+        } else {
+            setActiveCharacter(holder, INACTIVE);
+        }
     }
 
+
     /*
-     * TODO - Fix this and reimplement it
-     * Not currently used - getting an error on trying to update an offscreen viewholder
-     */
-    public void setActiveCharacter(RecyclerView.ViewHolder viewHolder, boolean isActive) {
+    * Set the background of the given ViewHolder to green (active) or white (inactive)
+    */
+    private void setActiveCharacter(RecyclerView.ViewHolder viewHolder, CharacterStatus status) {
+
         // Highlight the character if it is in combat
         if (viewHolder == null) {
             Log.e("setActiveCharacter", "null viewHolder");
             return;
         }
-        if (isActive) {
+        if (status == ACTIVE) {
             viewHolder.itemView.setBackgroundColor(viewHolder.itemView.getResources()
                     .getColor(R.color.colorActiveTurn));
+        } else if (status == DELAY) {
+            viewHolder.itemView.setBackgroundColor(viewHolder.itemView.getResources()
+                    .getColor(R.color.colorDelayTurn));
         } else {
             viewHolder.itemView.setBackgroundColor(viewHolder.itemView.getResources()
                     .getColor(R.color.white));
         }
 
     }
+
 
     @Override
     public int getItemCount() {
@@ -188,6 +216,7 @@ public class CombatAdapter extends RecyclerView.Adapter<CombatAdapter.CombatAdap
             return 0;
         }
     }
+
 
     public ArrayList<CharacterType> getCharacterList() {
         return characterList;
@@ -202,6 +231,7 @@ public class CombatAdapter extends RecyclerView.Adapter<CombatAdapter.CombatAdap
         ImageView characterColour;
         ImageButton minusButton;
         ImageButton plusButton;
+
 
         public CombatAdapterViewHolder(View itemView) {
             super(itemView);
@@ -219,6 +249,7 @@ public class CombatAdapter extends RecyclerView.Adapter<CombatAdapter.CombatAdap
             minusButton.setOnClickListener(this);
             plusButton.setOnClickListener(this);
         }
+
 
         /*
          * Dispatcher for character click events

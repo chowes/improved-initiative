@@ -117,11 +117,13 @@ public class CharacterActivity extends AppCompatActivity
                     cursor.getColumnIndex(CharacterContract.CharacterEntry.COLUMN_NAME_TURN_ORDER));
             int inCombat = cursor.getInt(
                     cursor.getColumnIndex(CharacterContract.CharacterEntry.COLUMN_NAME_IN_COMBAT));
+            int delayTurn = cursor.getInt(
+                    cursor.getColumnIndex(CharacterContract.CharacterEntry.COLUMN_NAME_DELAY_TURN));
             String colour = cursor.getString(
                     cursor.getColumnIndex(CharacterContract.CharacterEntry.COLUMN_NAME_COLOUR));
 
             character = new CharacterType(id, name, colour, hpCurrent, hpTotal, initBonus, initScore,
-                    turnOrder, inCombat);
+                    turnOrder, inCombat, delayTurn);
 
             characterList.add(character);
 

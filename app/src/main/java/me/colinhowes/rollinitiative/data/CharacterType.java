@@ -15,6 +15,7 @@ public class CharacterType {
     int init;
     int inCombat;
     int turnOrder;
+    int delayTurn;
 
     /*
      * We call this constructor when a character is first created, since we don't know
@@ -35,7 +36,7 @@ public class CharacterType {
     }
 
     public CharacterType(int id, String name, String colour, int hpCurrent, int hpMax,
-                         int initBonus, int init, int turnOrder, int inCombat) {
+                         int initBonus, int init, int turnOrder, int inCombat, int delayTurn) {
         this.name = name;
         this.colour = colour;
         this.hpCurrent = hpCurrent;
@@ -43,6 +44,7 @@ public class CharacterType {
         this.initBonus = initBonus;
         this.init = init;
         this.inCombat = inCombat;
+        this.delayTurn = delayTurn;
         this.turnOrder = turnOrder;
         this.id = id;
     }
@@ -79,6 +81,8 @@ public class CharacterType {
         return this.inCombat;
     }
 
+    public int getDelayTurn() { return this.delayTurn; }
+
     public int getTurnOrder() {
         return this.turnOrder;
     }
@@ -92,6 +96,8 @@ public class CharacterType {
     public void setInCombat(int inCombat) {
         this.inCombat = inCombat;
     }
+
+    public void setDelayTurn(int delayTurn) { this.delayTurn = delayTurn; }
 
     public void setTurnOrder(int turnOrder) {
         this.turnOrder = turnOrder;

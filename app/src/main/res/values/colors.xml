@@ -6,6 +6,7 @@
     <color name="colorAccent">#E57373</color>
     <color name="colorAccentLight">#E57373</color>
     <color name="colorActiveTurn">#69F0AE</color>
+    <color name="colorDelayTurn">#BDBDBD</color>
     <color name="colorInCombat">#BBDEFB</color>
     <color name="transparent">#00000000</color>
 

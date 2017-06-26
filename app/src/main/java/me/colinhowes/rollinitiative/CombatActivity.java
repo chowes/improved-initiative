@@ -39,6 +39,7 @@ public class CombatActivity extends AppCompatActivity implements
     private ArrayList<CharacterType> characterList;
     SQLiteDatabase db;
 
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -61,13 +62,16 @@ public class CombatActivity extends AppCompatActivity implements
         combatAdapter = new CombatAdapter(characterList, this);
         combatRecyclerView.setAdapter(combatAdapter);
 
+
         /*
          * Here is where we handle swipe events
          * Swipe left - delete character
          * Swipe right - edit character
          */
         new ItemTouchHelper(new ItemTouchHelper.SimpleCallback(
-                ItemTouchHelper.UP | ItemTouchHelper.DOWN, ItemTouchHelper.LEFT) {
+                ItemTouchHelper.UP | ItemTouchHelper.DOWN,
+                ItemTouchHelper.LEFT | ItemTouchHelper.RIGHT) {
+
 
             @Override
             public boolean onMove(RecyclerView recyclerView,
@@ -78,10 +82,12 @@ public class CombatActivity extends AppCompatActivity implements
                 return combatAdapter.swapCharacters(fromIndex, toIndex);
             }
 
+
             @Override
             public boolean isLongPressDragEnabled() {
                 return true;
             }
+
 
             // Called when a user swipes left or right on a ViewHolder
             @Override
@@ -95,15 +101,23 @@ public class CombatActivity extends AppCompatActivity implements
                     characterList.remove(position);
                     CharacterDbHelper.toggleInCombat(db, character.getId());
                     combatAdapter.notifyDataSetChanged();
-                } else {
-                    /*
-                     * TODO: implement swipe-right-to-edit here
-                     */
+                } else if (swipeDir == ItemTouchHelper.RIGHT) {
+                    if (position == 0) {
+                        character.setDelayTurn(1);
+                        combatAdapter.swapCharacters(0, characterList.size() - 1);
+                        combatRecyclerView.scrollToPosition(0);
+                    } else if (character.getDelayTurn() == 1) {
+                        combatAdapter.swapCharacters(position, 0);
+                    } else {
+                        // this just prevents the UI from removing the character from the view
+                        combatAdapter.swapCharacters(position, position);
+                    }
                 }
 
             }
         }).attachToRecyclerView(combatRecyclerView);
     }
+
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -112,6 +126,7 @@ public class CombatActivity extends AppCompatActivity implements
         getMenuInflater().inflate(R.menu.combat_menu_top, menu);
         return true;
     }
+
 
     @Override
     protected void onPause() {
@@ -132,6 +147,7 @@ public class CombatActivity extends AppCompatActivity implements
         }
     }
 
+
     @Override
     public void onBackPressed() {
         super.onBackPressed();
@@ -140,9 +156,11 @@ public class CombatActivity extends AppCompatActivity implements
         finish();
     }
 
+
     private void restartLoader() {
         getSupportLoaderManager().restartLoader(0, null, this);
     }
+
 
     private ArrayList<CharacterType> createCharacterList(Cursor cursor) {
         ArrayList<CharacterType> characterList = new ArrayList<>(cursor.getCount());
@@ -169,11 +187,13 @@ public class CombatActivity extends AppCompatActivity implements
                     cursor.getColumnIndex(CharacterContract.CharacterEntry.COLUMN_NAME_TURN_ORDER));
             int inCombat = cursor.getInt(
                     cursor.getColumnIndex(CharacterContract.CharacterEntry.COLUMN_NAME_IN_COMBAT));
+            int delayTurn = cursor.getInt(
+                    cursor.getColumnIndex(CharacterContract.CharacterEntry.COLUMN_NAME_DELAY_TURN));
             String colour = cursor.getString(
                     cursor.getColumnIndex(CharacterContract.CharacterEntry.COLUMN_NAME_COLOUR));
 
             character = new CharacterType(id, name, colour, hpCurrent, hpTotal, initBonus, initScore,
-                    turnOrder, inCombat);
+                    turnOrder, inCombat, delayTurn);
 
             characterList.add(character);
 
@@ -181,6 +201,7 @@ public class CombatActivity extends AppCompatActivity implements
 
         return characterList;
     }
+
 
     public void getTurnOrder() {
         Cursor cursor = CharacterDbHelper.getCombatants(db);
@@ -202,11 +223,13 @@ public class CombatActivity extends AppCompatActivity implements
         cursor.close();
     }
 
+
     @Override
     protected void onResume() {
         super.onResume();
         restartLoader();
     }
+
 
     /*
      * Get the character data asynchronously
@@ -253,6 +276,7 @@ public class CombatActivity extends AppCompatActivity implements
         };
     }
 
+
     /*
      * After the load finishes we need to set the new cursor in the CharacterAdapter
      * Note that changeCursor closes the old cursor
@@ -262,6 +286,7 @@ public class CombatActivity extends AppCompatActivity implements
         combatAdapter.changeList(data);
     }
 
+
     /*
      * Invalidate old cursor
      */
@@ -269,6 +294,7 @@ public class CombatActivity extends AppCompatActivity implements
     public void onLoaderReset(Loader<ArrayList<CharacterType>> loader) {
         combatAdapter.changeList(null);
     }
+
 
     @Override
     public void onCombatClick(int position, EventType eventType) {
@@ -297,6 +323,7 @@ public class CombatActivity extends AppCompatActivity implements
         }
     }
 
+
     public void startAddCharacter(MenuItem item) {
         Context context = this;
         Class destinationActivity;
@@ -306,15 +333,18 @@ public class CombatActivity extends AppCompatActivity implements
         startActivity(intent);
     }
 
+
     public void replayLastRound(MenuItem item) {
         combatAdapter.swapCharacters(characterList.size() - 1, 0);
         combatRecyclerView.scrollToPosition(0);
     }
 
+
     public void startNextRound(MenuItem item) {
         combatAdapter.swapCharacters(0, characterList.size() - 1);
         combatRecyclerView.scrollToPosition(0);
     }
+
 
     public void showInstructions(MenuItem menuItem) {
         SharedPreferences sharedPref = this.getPreferences(Context.MODE_PRIVATE);
@@ -325,6 +355,7 @@ public class CombatActivity extends AppCompatActivity implements
 
         showInstructions();
     }
+
 
     private void showInstructions() {
 
@@ -357,5 +388,4 @@ public class CombatActivity extends AppCompatActivity implements
         AlertDialog alertDialog = builder.create();
         alertDialog.show();
     }
-
 }

@@ -17,5 +17,6 @@ public final class CharacterContract {
         public static final String COLUMN_NAME_INIT = "init";
         public static final String COLUMN_NAME_TURN_ORDER = "turn_order";
         public static final String COLUMN_NAME_IN_COMBAT = "in_combat";
+        public static final String COLUMN_NAME_DELAY_TURN = "delay_turn";
     }
 }

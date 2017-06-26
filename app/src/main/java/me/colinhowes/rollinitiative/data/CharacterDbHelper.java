@@ -16,7 +16,7 @@ import static android.R.attr.id;
 public class CharacterDbHelper extends SQLiteOpenHelper {
 
     private static final String DATABASE_NAME = "character.db";
-    private static final int DATABASE_VERSION = 1;
+    private static final int DATABASE_VERSION = 2;
 
     public CharacterDbHelper(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
@@ -35,6 +35,7 @@ public class CharacterDbHelper extends SQLiteOpenHelper {
                 CharacterContract.CharacterEntry.COLUMN_NAME_INIT + " INTEGER NOT NULL, " +
                 CharacterContract.CharacterEntry.COLUMN_NAME_TURN_ORDER + " INTEGER, " +
                 CharacterContract.CharacterEntry.COLUMN_NAME_IN_COMBAT + " INTEGER NOT NULL" +
+                CharacterContract.CharacterEntry.COLUMN_NAME_DELAY_TURN + " INTEGER NOT NULL" +
                 ");";
 
         db.execSQL(SQL_CREATE_TABLE_STATEMENT);
@@ -43,9 +44,13 @@ public class CharacterDbHelper extends SQLiteOpenHelper {
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
         Log.d("Upgrade", String.valueOf(newVersion));
-        final String SQL_DROP_TABLE_STATEMENT = "DROP TABLE IF EXISTS " +
-                CharacterContract.CharacterEntry.TABLE_NAME;
-        db.execSQL(SQL_DROP_TABLE_STATEMENT);
+        final String SQL_UPDATE_TABLE_STATEMENT =
+                "ALTER TABLE " +
+                CharacterContract.CharacterEntry.TABLE_NAME +
+                " ADD COLUMN " +
+                CharacterContract.CharacterEntry.COLUMN_NAME_DELAY_TURN +
+                " INTEGER NOT NULL DEFAULT 0";
+        db.execSQL(SQL_UPDATE_TABLE_STATEMENT);
     }
 
     public static Cursor getCharacters(SQLiteDatabase db) {
@@ -133,6 +138,7 @@ public class CharacterDbHelper extends SQLiteOpenHelper {
         values.put(CharacterContract.CharacterEntry.COLUMN_NAME_INIT, character.getInit());
         values.put(CharacterContract.CharacterEntry.COLUMN_NAME_TURN_ORDER, character.getTurnOrder());
         values.put(CharacterContract.CharacterEntry.COLUMN_NAME_IN_COMBAT, character.getInCombat());
+        values.put(CharacterContract.CharacterEntry.COLUMN_NAME_DELAY_TURN, character.getDelayTurn());
 
         db.update(
                 CharacterContract.CharacterEntry.TABLE_NAME,

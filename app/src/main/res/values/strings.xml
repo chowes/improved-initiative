@@ -32,6 +32,7 @@
     <string name="next_round">Next Turn</string>
     <string name="replay_round">Replay Turn</string>
     <string name="add_character">Characters</string>
+    <string name="delay_turn">Delay Turn</string>
     <string name="combat_tutorial_pref">show_combat_instructions</string>
     <string name="combat_tutorial_swipe_left_label">Swipe left:</string>
     <string name="combat_tutorial_swipe_left_text">Remove character from combat</string>
