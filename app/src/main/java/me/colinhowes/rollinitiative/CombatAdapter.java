@@ -183,6 +183,9 @@ public class CombatAdapter extends RecyclerView.Adapter<CombatAdapter.CombatAdap
     }
 
 
+
+
+
     /*
     * Set the background of the given ViewHolder to green (active) or white (inactive)
     */

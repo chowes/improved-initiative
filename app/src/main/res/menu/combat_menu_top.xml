@@ -2,6 +2,12 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
     <item
+        android:title="@string/roll_initiative"
+        android:icon="@drawable/ic_casino_white_48dp"
+        app:showAsAction="ifRoom"
+        android:orderInCategory="100"
+        android:onClick="rollInitiative"/>
+    <item
         android:title="@string/show_instructions"
         app:showAsAction="never"
         android:orderInCategory="200"

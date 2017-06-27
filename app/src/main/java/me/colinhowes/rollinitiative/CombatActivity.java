@@ -101,6 +101,7 @@ public class CombatActivity extends AppCompatActivity implements
                     characterList.remove(position);
                     CharacterDbHelper.toggleInCombat(db, character.getId());
                     combatAdapter.notifyDataSetChanged();
+                    combatRecyclerView.scrollToPosition(0);
                 } else if (swipeDir == ItemTouchHelper.RIGHT) {
                     if (position == 0) {
                         character.setDelayTurn(1);
@@ -108,6 +109,7 @@ public class CombatActivity extends AppCompatActivity implements
                         combatRecyclerView.scrollToPosition(0);
                     } else if (character.getDelayTurn() == 1) {
                         combatAdapter.swapCharacters(position, 0);
+                        combatRecyclerView.scrollToPosition(0);
                     } else {
                         // this just prevents the UI from removing the character from the view
                         combatAdapter.swapCharacters(position, position);
@@ -343,6 +345,61 @@ public class CombatActivity extends AppCompatActivity implements
     public void startNextRound(MenuItem item) {
         combatAdapter.swapCharacters(0, characterList.size() - 1);
         combatRecyclerView.scrollToPosition(0);
+    }
+
+
+    public void rollInitiative(MenuItem menuItem) {
+        int id;
+        int initBonus;
+        int initRoll;
+        int turnOrder;
+
+        ContentValues values = new ContentValues();
+        Random initRandom = new Random();
+
+        for (CharacterType character : characterList) {
+            CharacterDbHelper.updateCharacter(db, character);
+        }
+
+        Cursor cursor = CharacterDbHelper.getCombatants(db);
+        if (!cursor.moveToFirst()) {
+            cursor.close();
+            return;
+        }
+        do {
+            initBonus = cursor.getInt(cursor.getColumnIndex(CharacterContract.CharacterEntry.COLUMN_NAME_INIT_BONUS));
+            id = cursor.getInt(cursor.getColumnIndex(CharacterContract.CharacterEntry._ID));
+
+            initRoll = initRandom.nextInt(20) + 1;
+            initRoll += initBonus;
+            initRoll = initRoll > 999 ? 999 : initRoll;
+            initRoll = initRoll < -99 ? -99 : initRoll;
+            values.put(CharacterContract.CharacterEntry.COLUMN_NAME_INIT,
+                    String.valueOf(initRoll));
+
+            // update character with new inCombat value
+            CharacterDbHelper.updateCharacter(db, id, values);
+        } while (cursor.moveToNext());
+        cursor.close();
+
+        cursor = CharacterDbHelper.getCombatantsByInit(db);
+        values = new ContentValues();
+        turnOrder = 0;
+
+        if (!cursor.moveToFirst()) {
+            return;
+        }
+
+        do {
+            id = cursor.getInt(cursor.getColumnIndex(
+                    CharacterContract.CharacterEntry._ID));
+            values.put(CharacterContract.CharacterEntry.COLUMN_NAME_TURN_ORDER, turnOrder);
+            CharacterDbHelper.updateCharacter(db, id, values);
+            turnOrder++;
+        } while (cursor.moveToNext());
+        cursor.close();
+
+        restartLoader();
     }
 
 
