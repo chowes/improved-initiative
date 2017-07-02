@@ -9,8 +9,8 @@ android {
         applicationId "me.colinhowes.rollinitiative"
         minSdkVersion 15
         targetSdkVersion 25
-        versionCode 15
-        versionName "ogre"
+        versionCode 17
+        versionName "quasit"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
     }
     buildTypes {

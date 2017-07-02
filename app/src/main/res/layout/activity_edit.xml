@@ -107,7 +107,7 @@
                 android:layout_height="wrap_content"
                 android:layout_weight=".75"
                 android:textSize="18sp"
-                android:inputType="number"
+                android:inputType="number|numberSigned"
                 android:hint="@string/edit_init_bonus"
                 android:maxLength="3"
                 android:textColor="@color/black"
