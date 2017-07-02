@@ -328,6 +328,12 @@ public class CharacterActivity extends AppCompatActivity
         ContentValues values = new ContentValues();
         Random initRandom = new Random();
 
+
+        for (CharacterType character : characterList) {
+            CharacterDbHelper.updateCharacter(db, character);
+        }
+
+
         Cursor cursor = CharacterDbHelper.getCharacters(db);
         if (!cursor.moveToFirst()) {
             cursor.close();

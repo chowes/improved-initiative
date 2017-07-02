@@ -36,8 +36,12 @@
     <string name="combat_tutorial_pref">show_combat_instructions</string>
     <string name="combat_tutorial_swipe_left_label">Swipe left:</string>
     <string name="combat_tutorial_swipe_left_text">Remove character from combat</string>
+    <string name="combat_tutorial_swipe_right_label">Swipe right:</string>
+    <string name="combat_tutorial_swipe_right_text">Delay an action or take a delayed action</string>
     <string name="combat_tutorial_drag_label">Drag:</string>
     <string name="combat_tutorial_drag_text">Reorder initiative</string>
+    <string name="combat_tutorial_roll_initiative_label">Roll Initiative:</string>
+    <string name="combat_tutorial_roll_initiative_text">Press the die in the top menu to re-roll initiative for all characters</string>
 
     <!--Character Item-->
     <string name="char_hp">HP: %1$d/%2$d</string>

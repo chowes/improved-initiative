@@ -30,12 +30,32 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:textAppearance="@style/Base.TextAppearance.AppCompat.Title"
+            android:text="@string/combat_tutorial_swipe_right_label"/>
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/combat_tutorial_swipe_right_text"
+            android:layout_marginBottom="16dp"/>
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textAppearance="@style/Base.TextAppearance.AppCompat.Title"
             android:text="@string/combat_tutorial_drag_label"/>
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="@string/combat_tutorial_drag_text"/>
-
+            android:text="@string/combat_tutorial_drag_text"
+            android:layout_marginBottom="16dp"/>
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textAppearance="@style/Base.TextAppearance.AppCompat.Title"
+            android:text="@string/combat_tutorial_roll_initiative_label"/>
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/combat_tutorial_roll_initiative_text"
+            android:layout_marginBottom="16dp"/>
 
     </LinearLayout>
 </ScrollView>

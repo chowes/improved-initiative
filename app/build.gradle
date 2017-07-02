@@ -9,8 +9,8 @@ android {
         applicationId "me.colinhowes.rollinitiative"
         minSdkVersion 15
         targetSdkVersion 25
-        versionCode 12
-        versionName "lich"
+        versionCode 14
+        versionName "nymph"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
     }
     buildTypes {
