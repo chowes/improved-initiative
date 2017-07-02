@@ -34,7 +34,7 @@ public class CharacterDbHelper extends SQLiteOpenHelper {
                 CharacterContract.CharacterEntry.COLUMN_NAME_INIT_BONUS + " INTEGER NOT NULL, " +
                 CharacterContract.CharacterEntry.COLUMN_NAME_INIT + " INTEGER NOT NULL, " +
                 CharacterContract.CharacterEntry.COLUMN_NAME_TURN_ORDER + " INTEGER, " +
-                CharacterContract.CharacterEntry.COLUMN_NAME_IN_COMBAT + " INTEGER NOT NULL" +
+                CharacterContract.CharacterEntry.COLUMN_NAME_IN_COMBAT + " INTEGER NOT NULL, " +
                 CharacterContract.CharacterEntry.COLUMN_NAME_DELAY_TURN + " INTEGER NOT NULL" +
                 ");";
 
@@ -110,6 +110,7 @@ public class CharacterDbHelper extends SQLiteOpenHelper {
         values.put(CharacterContract.CharacterEntry.COLUMN_NAME_INIT_BONUS, character.initBonus);
         values.put(CharacterContract.CharacterEntry.COLUMN_NAME_INIT, character.init);
         values.put(CharacterContract.CharacterEntry.COLUMN_NAME_IN_COMBAT, character.inCombat);
+        values.put(CharacterContract.CharacterEntry.COLUMN_NAME_DELAY_TURN, character.delayTurn);
 
         db.insert(CharacterContract.CharacterEntry.TABLE_NAME, null, values);
     }

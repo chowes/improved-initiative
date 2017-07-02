@@ -172,6 +172,7 @@ public class EditActivity extends AppCompatActivity {
             values.put(CharacterContract.CharacterEntry.COLUMN_NAME_INIT_BONUS, String.valueOf(initBonus));
             values.put(CharacterContract.CharacterEntry.COLUMN_NAME_INIT, String.valueOf(init));
             values.put(CharacterContract.CharacterEntry.COLUMN_NAME_IN_COMBAT, String.valueOf(inCombat));
+            values.put(CharacterContract.CharacterEntry.COLUMN_NAME_DELAY_TURN, String.valueOf(0));
 
             CharacterDbHelper.updateCharacter(characterDb, characterId, values);
         }

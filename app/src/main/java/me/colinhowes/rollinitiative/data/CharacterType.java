@@ -31,6 +31,7 @@ public class CharacterType {
         this.initBonus = initBonus;
         this.init = init;
         this.inCombat = inCombat;
+        this.delayTurn = 0;
         this.turnOrder = -1;
         this.id = -1;
     }
